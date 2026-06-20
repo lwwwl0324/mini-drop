@@ -1,0 +1,35 @@
+syntax = "proto3";
+package healthcheck;
+
+import "common.proto";
+
+option go_package = "./;healthcheck";
+
+service HealthCheck {
+  rpc Do(HealthCheckRequest) returns (HealthCheckResponse);
+}
+
+message HealthCheckRequest {
+  string host_name = 1;
+  string ip_addr = 2;
+  string uid = 3;
+  string agent_version = 4;
+  common.PidStats self_pstats = 5;
+  common.PidStats children_pstats = 6;
+}
+
+message HealthCheckResponse {
+  enum ServingStatus { UNKNOWN=0; SERVING=1; NOT_SERVING=2; }
+  ServingStatus status = 1;
+  bool pending = 2;
+  TaskDesc task_desc = 3;
+}
+
+// 临时定义，后续移到 hotmethod.proto
+message TaskDesc {
+  string task_id = 1;
+  uint32 task_type = 2;
+  uint32 duration_sec = 3;
+  uint32 sample_hz = 4;
+  int32 target_pid = 5;
+}

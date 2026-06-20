@@ -1,0 +1,27 @@
+syntax = "proto3";
+package healthcheck;
+
+import "common.proto";
+import "hotmethod.proto";
+
+option go_package = "./;proto";
+
+service HealthCheck {
+  rpc Do(HealthCheckRequest) returns (HealthCheckResponse);
+}
+
+message HealthCheckRequest {
+  string host_name = 1;
+  string ip_addr = 2;
+  string uid = 3;
+  string agent_version = 4;
+  common.PidStats self_pstats = 5;
+  common.PidStats children_pstats = 6;
+}
+
+message HealthCheckResponse {
+  enum ServingStatus { UNKNOWN=0; SERVING=1; NOT_SERVING=2; }
+  ServingStatus status = 1;
+  bool pending = 2;
+  hotmethod.TaskDesc task_desc = 3;  // 改用 hotmethod.TaskDesc
+}

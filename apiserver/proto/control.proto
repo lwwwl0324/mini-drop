@@ -1,0 +1,20 @@
+syntax = "proto3";
+package control;
+
+import "hotmethod.proto";
+
+option go_package = "./;proto";
+
+service Control {
+  rpc CreateTask(CreateTaskRequest) returns (CreateTaskResponse);
+}
+
+message CreateTaskRequest {
+  string target_ip = 1;
+  string service = 2;
+  hotmethod.TaskDesc task_desc = 3;
+}
+
+message CreateTaskResponse {
+  string task_id = 1;
+}

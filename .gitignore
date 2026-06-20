@@ -1,0 +1,42 @@
+# 编译产物
+build/
+*.o
+*.exe
+*.out
+drop/drop_server
+drop/drop_agent
+apiserver/apiserver
+
+# 依赖目录
+node_modules/
+vendor/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# 日志和临时文件
+*.log
+*.tmp
+*.swp
+*.swo
+.DS_Store
+
+# 运行时数据
+postgres_data/
+minio-data/
+*.data
+*.svg
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# 环境变量
+.env
+.env.local
+drop/build/
+minio-data/
+web_frontend/node_modules/

@@ -1,0 +1,35 @@
+syntax = "proto3";
+package hotmethod;
+
+import "common.proto";
+
+option go_package = "./;proto";
+
+service Hotmethod {
+  rpc NotifyResult(TaskResult) returns (Empty);
+}
+
+message TaskDesc {
+  string task_id = 1;
+  uint32 task_type = 2;
+  uint32 profiler_type = 3;
+  RecordArgv sample_argv = 4;
+  string container_name = 5;
+  uint32 timeout_sec = 7;
+  common.CosConfig cos_config = 8;
+}
+
+message RecordArgv {
+  uint32 hz = 1;
+  uint64 duration = 2;
+  int32 pid = 3;
+  string callgraph = 4;
+}
+
+message TaskResult {
+  string task_id = 1;
+  string error_message = 2;
+  string cos_key = 4;
+}
+
+message Empty {}

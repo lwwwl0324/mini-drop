@@ -1,0 +1,27 @@
+syntax = "proto3";
+package common;
+
+option go_package = "./;proto";
+
+// 进程统计信息
+message PidStats {
+  double cpu_percent = 1;      // CPU 使用率百分比
+  double memory_mb = 2;        // 内存使用 MB
+  double io_read_kb = 3;       // IO 读 KB
+  double io_write_kb = 4;      // IO 写 KB
+}
+
+// COS 对象存储配置
+message CosConfig {
+  string bucket = 1;
+  string region = 2;
+  string secret_id = 3;
+  string secret_key = 4;
+  string token = 5;
+}
+
+// 文件
+message File {
+  bytes content = 1;
+  string path = 2;
+}
