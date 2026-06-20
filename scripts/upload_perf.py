@@ -11,7 +11,6 @@ def upload_file(bucket, object_name, file_path):
         secure=False
     )
     
-    # 如果 bucket 不存在则创建
     if not client.bucket_exists(bucket):
         client.make_bucket(bucket)
         print(f"创建 bucket: {bucket}")

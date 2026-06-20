@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"fmt"
-	"os"
 	"os/exec"
 	"time"
 
@@ -25,7 +24,7 @@ func NewTaskService(dropClient *client.DropClient, db *gorm.DB) *TaskService {
 	}
 }
 
-func (s *TaskService) CreateTask(ctx context.Context, targetIP string, pid, duration, frequency int, profilerType string) (*model.Task, error) {
+func (s *TaskService) CreateTask(ctx context.Context, targetIP string, pid, duration, frequency int, profilerType int) (*model.Task, error) {
 	taskID := fmt.Sprintf("task_%d", time.Now().Unix())
 
 	task := &model.Task{
@@ -34,7 +33,7 @@ func (s *TaskService) CreateTask(ctx context.Context, targetIP string, pid, dura
 		PID:          pid,
 		Duration:     duration,
 		Frequency:    frequency,
-		ProfilerType: profilerType,
+		ProfilerType: fmt.Sprintf("%d", profilerType),
 		Status:       "pending",
 		StatusMsg:    "任务已创建，等待下发",
 	}
@@ -43,7 +42,7 @@ func (s *TaskService) CreateTask(ctx context.Context, targetIP string, pid, dura
 		return nil, fmt.Errorf("保存任务失败: %v", err)
 	}
 
-	_, err := s.dropClient.CreateTask(ctx, targetIP, taskID, pid, duration, frequency)
+	_, err := s.dropClient.CreateTask(ctx, targetIP, taskID, pid, duration, frequency, profilerType)
 	if err != nil {
 		task.Status = "failed"
 		task.StatusMsg = err.Error()
@@ -55,25 +54,25 @@ func (s *TaskService) CreateTask(ctx context.Context, targetIP string, pid, dura
 	task.StatusMsg = "任务已下发，Agent 正在采集"
 	s.db.Save(task)
 
-	// 等待 25 秒（给 Agent 留足采集和上传时间）
-	go s.autoGenerateFlamegraph(taskID, duration)
+	go s.autoGenerateFlamegraph(taskID, duration, pid, profilerType)
 
 	return task, nil
 }
 
-func (s *TaskService) autoGenerateFlamegraph(taskID string, duration int) {
-	// 增加等待时间到 25 秒
+func (s *TaskService) autoGenerateFlamegraph(taskID string, duration, pid, profilerType int) {
 	waitTime := time.Duration(duration+15) * time.Second
 	fmt.Printf("[Auto] 等待 %v 后生成火焰图\n", waitTime)
 	time.Sleep(waitTime)
 
-	// 先检查本地文件是否存在
-	localFile := fmt.Sprintf("/tmp/perf_%s.data", taskID)
-	if _, err := os.Stat(localFile); os.IsNotExist(err) {
-		fmt.Printf("[Auto] 本地文件不存在，尝试从 MinIO 下载\n")
+	var cmd *exec.Cmd
+	if profilerType == 1 {
+		// eBPF 采集：直接显示日志
+		logFile := fmt.Sprintf("/tmp/bpftrace_%s.log", taskID)
+		cmd = exec.Command("bash", "-c", fmt.Sprintf("cat %s", logFile))
+	} else {
+		cmd = exec.Command("python3", "/home/lwl/mini-drop/scripts/generate_flamegraph.py", taskID)
 	}
 
-	cmd := exec.Command("python3", "/home/lwl/generate_flamegraph.py", taskID)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("[Auto] 火焰图生成失败: %v, %s\n", err, string(output))

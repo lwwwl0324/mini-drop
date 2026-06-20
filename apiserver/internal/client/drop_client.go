@@ -31,15 +31,14 @@ func (c *DropClient) Close() error {
 	return c.conn.Close()
 }
 
-func (c *DropClient) CreateTask(ctx context.Context, targetIP, taskID string, pid, duration, frequency int) (string, error) {
-	// 构造 gRPC 请求
+func (c *DropClient) CreateTask(ctx context.Context, targetIP, taskID string, pid, duration, frequency int, profilerType int) (string, error) {
 	req := &proto.CreateTaskRequest{
 		TargetIp: targetIP,
 		Service:  "hotmethod",
 		TaskDesc: &proto.TaskDesc{
-			TaskId:     taskID,
-			TaskType:   0,
-			ProfilerType: 0,
+			TaskId:       taskID,
+			TaskType:     0,
+			ProfilerType: uint32(profilerType),
 			SampleArgv: &proto.RecordArgv{
 				Hz:       uint32(frequency),
 				Duration: uint64(duration),

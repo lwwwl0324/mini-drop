@@ -6,8 +6,10 @@
 #include <cstdlib>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <signal.h>
 #include <grpcpp/grpcpp.h>
 #include "healthcheck.grpc.pb.h"
+#include "hotmethod.pb.h"
 
 class Agent {
 public:
@@ -26,7 +28,7 @@ public:
             request.set_host_name(hostname_);
             request.set_ip_addr(ip_);
             request.set_uid("agent_" + ip_);
-            request.set_agent_version("0.2.0");
+            request.set_agent_version("0.3.0");
             
             healthcheck::HealthCheckResponse response;
             grpc::ClientContext context;
@@ -38,11 +40,16 @@ public:
                 if (response.pending()) {
                     const auto& task = response.task_desc();
                     std::cout << "[Task] 收到任务: " << task.task_id() 
-                              << ", PID: " << task.target_pid() 
-                              << ", " << task.sample_hz() << "Hz, " 
-                              << task.duration_sec() << "秒" << std::endl;
+                              << ", Profiler: " << task.profiler_type()
+                              << ", PID: " << task.sample_argv().pid() 
+                              << ", " << task.sample_argv().hz() << "Hz, " 
+                              << task.sample_argv().duration() << "秒" << std::endl;
                     
-                    ExecutePerf(task);
+                    if (task.profiler_type() == 1) {
+                        ExecuteBpftrace(task);
+                    } else {
+                        ExecutePerf(task);
+                    }
                 }
             } else {
                 std::cout << "[Heartbeat] 失败: " << status.error_message() << std::endl;
@@ -55,25 +62,22 @@ public:
     void Stop() { running_ = false; }
     
 private:
-    void ExecutePerf(const healthcheck::TaskDesc& task) {
+    void ExecutePerf(const hotmethod::TaskDesc& task) {
         std::string data_file = "/tmp/perf_" + task.task_id() + ".data";
         std::string cmd;
         
-        // 根据 PID 构造命令（确保 -o 只出现一次）
-        if (task.target_pid() == 0) {
-            // 采样整个系统
-            cmd = "perf record -F " + std::to_string(task.sample_hz()) +
+        if (task.sample_argv().pid() == 0) {
+            cmd = "perf record -F " + std::to_string(task.sample_argv().hz()) +
                   " -a -g -o " + data_file +
-                  " -- sleep " + std::to_string(task.duration_sec()) + " 2>&1";
+                  " -- sleep " + std::to_string(task.sample_argv().duration()) + " 2>&1";
         } else {
-            // 采样指定进程
-            cmd = "perf record -F " + std::to_string(task.sample_hz()) +
-                  " -g -p " + std::to_string(task.target_pid()) +
+            cmd = "perf record -F " + std::to_string(task.sample_argv().hz()) +
+                  " -g -p " + std::to_string(task.sample_argv().pid()) +
                   " -o " + data_file +
-                  " -- sleep " + std::to_string(task.duration_sec()) + " 2>&1";
+                  " -- sleep " + std::to_string(task.sample_argv().duration()) + " 2>&1";
         }
         
-        std::cout << "[Task] 执行: " << cmd << std::endl;
+        std::cout << "[Perf] 执行: " << cmd << std::endl;
         
         pid_t pid = fork();
         if (pid == 0) {
@@ -84,25 +88,46 @@ private:
             waitpid(pid, &status, 0);
             
             if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
-                std::cout << "[Task] perf 成功: " << data_file << std::endl;
+                std::cout << "[Perf] 成功: " << data_file << std::endl;
                 
-                // 上传到 MinIO
                 std::string object_name = task.task_id() + "/perf.data";
-                std::string upload_cmd = "python3 /home/lwl/upload_perf.py drop-data " + object_name + " " + data_file;
-                
-                std::cout << "[Task] 上传: " << upload_cmd << std::endl;
-                
-                int upload_status = system(upload_cmd.c_str());
-                if (upload_status == 0) {
-                    std::cout << "[Task] 上传成功: " << object_name << std::endl;
-                } else {
-                    std::cout << "[Task] 上传失败，退出码: " << upload_status << std::endl;
-                }
+                std::string upload_cmd = "python3 /home/lwl/mini-drop/scripts/upload_perf.py drop-data " + object_name + " " + data_file;
+                system(upload_cmd.c_str());
             } else {
-                std::cout << "[Task] perf 失败，退出码: " << WEXITSTATUS(status) << std::endl;
+                std::cout << "[Perf] 失败，退出码: " << WEXITSTATUS(status) << std::endl;
             }
-        } else {
-            std::cout << "[Task] fork 失败" << std::endl;
+        }
+    }
+    
+    void ExecuteBpftrace(const hotmethod::TaskDesc& task) {
+        std::string script_path = "/home/lwl/mini-drop/scripts/io_trace.bt";
+        std::string log_file = "/tmp/bpftrace_" + task.task_id() + ".log";
+        std::string duration = std::to_string(task.sample_argv().duration());
+        
+        std::string cmd = "sudo timeout " + duration + "s bpftrace " + script_path + " > " + log_file + " 2>&1";
+        
+        std::cout << "[eBPF] 执行: " << cmd << std::endl;
+        
+        pid_t pid = fork();
+        if (pid == 0) {
+            execl("/bin/sh", "sh", "-c", cmd.c_str(), nullptr);
+            exit(1);
+        } else if (pid > 0) {
+            int status;
+            waitpid(pid, &status, 0);
+            
+            if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
+                std::cout << "[eBPF] 采集完成: " << log_file << std::endl;
+                
+                std::string cat_cmd = "cat " + log_file;
+                system(cat_cmd.c_str());
+                
+                std::string object_name = task.task_id() + "/bpftrace.log";
+                std::string upload_cmd = "python3 /home/lwl/mini-drop/scripts/upload_perf.py drop-data " + object_name + " " + log_file;
+                system(upload_cmd.c_str());
+            } else {
+                std::cout << "[eBPF] 失败，退出码: " << WEXITSTATUS(status) << std::endl;
+            }
         }
     }
     

@@ -8,7 +8,6 @@ import {
   InputNumber, 
   Select,
   Tag,
-  MessagePlugin,
   Loading
 } from 'tdesign-react';
 import { AddIcon } from 'tdesign-icons-react';
@@ -30,6 +29,7 @@ const TaskList = () => {
       setTasks(res.data || []);
     } catch (error) {
       console.error('获取任务列表失败:', error);
+      alert('获取任务列表失败');
     } finally {
       setLoading(false);
     }
@@ -50,35 +50,28 @@ const TaskList = () => {
       
       setSubmitting(true);
       
+      // 直接发送字符串 "perf" 或 "ebpf"
       const res = await createTask({
         target_ip: values.target_ip || '127.0.0.1',
         pid: values.pid || 0,
         duration: values.duration || 10,
         frequency: values.frequency || 999,
-        profiler_type: values.profiler_type || 'perf',
+        profiler_type: values.profiler_type || 'perf',  // 直接发送字符串
       });
       
       console.log('✅ 任务创建成功:', res.data);
+      alert(`✅ 任务创建成功: ${res.data.task_id}`);
       
-      // 先不关闭弹窗，等待任务出现在列表中
-      // 刷新列表
-      await fetchTasks();
-      
-      // 查找刚创建的任务
-      const newTask = tasks.find(t => t.task_id === res.data.task_id) || 
-                      (await getTasks()).data.find(t => t.task_id === res.data.task_id);
-      
-      // 关闭弹窗
       setDialogVisible(false);
       form.reset();
       setSubmitting(false);
       
-      MessagePlugin.success(`任务创建成功: ${res.data.task_id}`);
+      await fetchTasks();
       
     } catch (error) {
       console.error('❌ 创建失败:', error);
       const errMsg = error.response?.data?.msg || error.message || '创建任务失败';
-      MessagePlugin.error('创建失败: ' + errMsg);
+      alert('❌ 创建失败: ' + errMsg);
       setSubmitting(false);
     }
   };
@@ -114,7 +107,7 @@ const TaskList = () => {
     { colKey: 'status_msg', title: '状态信息', ellipsis: true },
     {
       colKey: 'flamegraph_url',
-      title: '火焰图',
+      title: '结果',
       width: 120,
       cell: ({ row }) => {
         if (row.flamegraph_url) {
@@ -210,9 +203,8 @@ const TaskList = () => {
           <FormItem label="采集器" name="profiler_type" initialData="perf">
             <Select
               options={[
-                { label: 'perf', value: 'perf' },
-                { label: 'eBPF (开发中)', value: 'ebpf', disabled: true },
-                { label: 'async-profiler (开发中)', value: 'async', disabled: true },
+                { label: 'perf (CPU采样)', value: 'perf' },
+                { label: 'eBPF (IO追踪)', value: 'ebpf' },
               ]}
             />
           </FormItem>

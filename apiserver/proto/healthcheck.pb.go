@@ -158,7 +158,7 @@ type HealthCheckResponse struct {
 	state         protoimpl.MessageState            `protogen:"open.v1"`
 	Status        HealthCheckResponse_ServingStatus `protobuf:"varint,1,opt,name=status,proto3,enum=healthcheck.HealthCheckResponse_ServingStatus" json:"status,omitempty"`
 	Pending       bool                              `protobuf:"varint,2,opt,name=pending,proto3" json:"pending,omitempty"`
-	TaskDesc      *TaskDesc                         `protobuf:"bytes,3,opt,name=task_desc,json=taskDesc,proto3" json:"task_desc,omitempty"` // 改用 hotmethod.TaskDesc
+	TaskDesc      *TaskDesc                         `protobuf:"bytes,3,opt,name=task_desc,json=taskDesc,proto3" json:"task_desc,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }

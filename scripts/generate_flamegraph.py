@@ -50,7 +50,6 @@ def download_perf_data(task_id):
 
 def generate_flamegraph(perf_data_file, task_id):
     script_file = f"/tmp/{task_id}.script"
-    # 使用 sudo 执行 perf script，-f 参数强制读取
     cmd = f"sudo perf script -i {perf_data_file} -f > {script_file}"
     print(f"📊 执行: {cmd}")
     result = subprocess.run(cmd, shell=True, capture_output=True)

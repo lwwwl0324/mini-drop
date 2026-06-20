@@ -158,8 +158,8 @@ const char descriptor_table_protodef_hotmethod_2eproto[] PROTOBUF_SECTION_VARIAB
   "\n\nTaskResult\022\017\n\007task_id\030\001 \001(\t\022\025\n\rerror_m"
   "essage\030\002 \001(\t\022\017\n\007cos_key\030\004 \001(\t\"\007\n\005Empty2D"
   "\n\tHotmethod\0227\n\014NotifyResult\022\025.hotmethod."
-  "TaskResult\032\020.hotmethod.EmptyB\016Z\014./;hotme"
-  "thodb\006proto3"
+  "TaskResult\032\020.hotmethod.EmptyB\nZ\010./;proto"
+  "b\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_hotmethod_2eproto_deps[1] = {
   &::descriptor_table_common_2eproto,
@@ -172,7 +172,7 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_hot
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_hotmethod_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_hotmethod_2eproto = {
-  false, false, descriptor_table_protodef_hotmethod_2eproto, "hotmethod.proto", 492,
+  false, false, descriptor_table_protodef_hotmethod_2eproto, "hotmethod.proto", 488,
   &descriptor_table_hotmethod_2eproto_once, descriptor_table_hotmethod_2eproto_sccs, descriptor_table_hotmethod_2eproto_deps, 4, 1,
   schemas, file_default_instances, TableStruct_hotmethod_2eproto::offsets,
   file_level_metadata_hotmethod_2eproto, 4, file_level_enum_descriptors_hotmethod_2eproto, file_level_service_descriptors_hotmethod_2eproto,

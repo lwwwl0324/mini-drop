@@ -34,6 +34,7 @@
 #include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
 #include "common.pb.h"
+#include "hotmethod.pb.h"
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
 #define PROTOBUF_INTERNAL_EXPORT_healthcheck_2eproto
@@ -49,7 +50,7 @@ struct TableStruct_healthcheck_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxillaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[3]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[2]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -63,14 +64,10 @@ extern HealthCheckRequestDefaultTypeInternal _HealthCheckRequest_default_instanc
 class HealthCheckResponse;
 class HealthCheckResponseDefaultTypeInternal;
 extern HealthCheckResponseDefaultTypeInternal _HealthCheckResponse_default_instance_;
-class TaskDesc;
-class TaskDescDefaultTypeInternal;
-extern TaskDescDefaultTypeInternal _TaskDesc_default_instance_;
 }  // namespace healthcheck
 PROTOBUF_NAMESPACE_OPEN
 template<> ::healthcheck::HealthCheckRequest* Arena::CreateMaybeMessage<::healthcheck::HealthCheckRequest>(Arena*);
 template<> ::healthcheck::HealthCheckResponse* Arena::CreateMaybeMessage<::healthcheck::HealthCheckResponse>(Arena*);
-template<> ::healthcheck::TaskDesc* Arena::CreateMaybeMessage<::healthcheck::TaskDesc>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace healthcheck {
 
@@ -525,23 +522,23 @@ class HealthCheckResponse PROTOBUF_FINAL :
     kStatusFieldNumber = 1,
     kPendingFieldNumber = 2,
   };
-  // .healthcheck.TaskDesc task_desc = 3;
+  // .hotmethod.TaskDesc task_desc = 3;
   bool has_task_desc() const;
   private:
   bool _internal_has_task_desc() const;
   public:
   void clear_task_desc();
-  const ::healthcheck::TaskDesc& task_desc() const;
-  ::healthcheck::TaskDesc* release_task_desc();
-  ::healthcheck::TaskDesc* mutable_task_desc();
-  void set_allocated_task_desc(::healthcheck::TaskDesc* task_desc);
+  const ::hotmethod::TaskDesc& task_desc() const;
+  ::hotmethod::TaskDesc* release_task_desc();
+  ::hotmethod::TaskDesc* mutable_task_desc();
+  void set_allocated_task_desc(::hotmethod::TaskDesc* task_desc);
   private:
-  const ::healthcheck::TaskDesc& _internal_task_desc() const;
-  ::healthcheck::TaskDesc* _internal_mutable_task_desc();
+  const ::hotmethod::TaskDesc& _internal_task_desc() const;
+  ::hotmethod::TaskDesc* _internal_mutable_task_desc();
   public:
   void unsafe_arena_set_allocated_task_desc(
-      ::healthcheck::TaskDesc* task_desc);
-  ::healthcheck::TaskDesc* unsafe_arena_release_task_desc();
+      ::hotmethod::TaskDesc* task_desc);
+  ::hotmethod::TaskDesc* unsafe_arena_release_task_desc();
 
   // .healthcheck.HealthCheckResponse.ServingStatus status = 1;
   void clear_status();
@@ -568,206 +565,9 @@ class HealthCheckResponse PROTOBUF_FINAL :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
-  ::healthcheck::TaskDesc* task_desc_;
+  ::hotmethod::TaskDesc* task_desc_;
   int status_;
   bool pending_;
-  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  friend struct ::TableStruct_healthcheck_2eproto;
-};
-// -------------------------------------------------------------------
-
-class TaskDesc PROTOBUF_FINAL :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:healthcheck.TaskDesc) */ {
- public:
-  inline TaskDesc() : TaskDesc(nullptr) {};
-  virtual ~TaskDesc();
-
-  TaskDesc(const TaskDesc& from);
-  TaskDesc(TaskDesc&& from) noexcept
-    : TaskDesc() {
-    *this = ::std::move(from);
-  }
-
-  inline TaskDesc& operator=(const TaskDesc& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline TaskDesc& operator=(TaskDesc&& from) noexcept {
-    if (GetArena() == from.GetArena()) {
-      if (this != &from) InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return GetMetadataStatic().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return GetMetadataStatic().reflection;
-  }
-  static const TaskDesc& default_instance();
-
-  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const TaskDesc* internal_default_instance() {
-    return reinterpret_cast<const TaskDesc*>(
-               &_TaskDesc_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    2;
-
-  friend void swap(TaskDesc& a, TaskDesc& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(TaskDesc* other) {
-    if (other == this) return;
-    if (GetArena() == other->GetArena()) {
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(TaskDesc* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetArena() == other->GetArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  inline TaskDesc* New() const final {
-    return CreateMaybeMessage<TaskDesc>(nullptr);
-  }
-
-  TaskDesc* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
-    return CreateMaybeMessage<TaskDesc>(arena);
-  }
-  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void CopyFrom(const TaskDesc& from);
-  void MergeFrom(const TaskDesc& from);
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
-      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
-
-  private:
-  inline void SharedCtor();
-  inline void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(TaskDesc* other);
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "healthcheck.TaskDesc";
-  }
-  protected:
-  explicit TaskDesc(::PROTOBUF_NAMESPACE_ID::Arena* arena);
-  private:
-  static void ArenaDtor(void* object);
-  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
-  public:
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-  private:
-  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
-    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_healthcheck_2eproto);
-    return ::descriptor_table_healthcheck_2eproto.file_level_metadata[kIndexInFileMessages];
-  }
-
-  public:
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kTaskIdFieldNumber = 1,
-    kTaskTypeFieldNumber = 2,
-    kDurationSecFieldNumber = 3,
-    kSampleHzFieldNumber = 4,
-    kTargetPidFieldNumber = 5,
-  };
-  // string task_id = 1;
-  void clear_task_id();
-  const std::string& task_id() const;
-  void set_task_id(const std::string& value);
-  void set_task_id(std::string&& value);
-  void set_task_id(const char* value);
-  void set_task_id(const char* value, size_t size);
-  std::string* mutable_task_id();
-  std::string* release_task_id();
-  void set_allocated_task_id(std::string* task_id);
-  GOOGLE_PROTOBUF_RUNTIME_DEPRECATED("The unsafe_arena_ accessors for"
-  "    string fields are deprecated and will be removed in a"
-  "    future release.")
-  std::string* unsafe_arena_release_task_id();
-  GOOGLE_PROTOBUF_RUNTIME_DEPRECATED("The unsafe_arena_ accessors for"
-  "    string fields are deprecated and will be removed in a"
-  "    future release.")
-  void unsafe_arena_set_allocated_task_id(
-      std::string* task_id);
-  private:
-  const std::string& _internal_task_id() const;
-  void _internal_set_task_id(const std::string& value);
-  std::string* _internal_mutable_task_id();
-  public:
-
-  // uint32 task_type = 2;
-  void clear_task_type();
-  ::PROTOBUF_NAMESPACE_ID::uint32 task_type() const;
-  void set_task_type(::PROTOBUF_NAMESPACE_ID::uint32 value);
-  private:
-  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_task_type() const;
-  void _internal_set_task_type(::PROTOBUF_NAMESPACE_ID::uint32 value);
-  public:
-
-  // uint32 duration_sec = 3;
-  void clear_duration_sec();
-  ::PROTOBUF_NAMESPACE_ID::uint32 duration_sec() const;
-  void set_duration_sec(::PROTOBUF_NAMESPACE_ID::uint32 value);
-  private:
-  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_duration_sec() const;
-  void _internal_set_duration_sec(::PROTOBUF_NAMESPACE_ID::uint32 value);
-  public:
-
-  // uint32 sample_hz = 4;
-  void clear_sample_hz();
-  ::PROTOBUF_NAMESPACE_ID::uint32 sample_hz() const;
-  void set_sample_hz(::PROTOBUF_NAMESPACE_ID::uint32 value);
-  private:
-  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_sample_hz() const;
-  void _internal_set_sample_hz(::PROTOBUF_NAMESPACE_ID::uint32 value);
-  public:
-
-  // int32 target_pid = 5;
-  void clear_target_pid();
-  ::PROTOBUF_NAMESPACE_ID::int32 target_pid() const;
-  void set_target_pid(::PROTOBUF_NAMESPACE_ID::int32 value);
-  private:
-  ::PROTOBUF_NAMESPACE_ID::int32 _internal_target_pid() const;
-  void _internal_set_target_pid(::PROTOBUF_NAMESPACE_ID::int32 value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:healthcheck.TaskDesc)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr task_id_;
-  ::PROTOBUF_NAMESPACE_ID::uint32 task_type_;
-  ::PROTOBUF_NAMESPACE_ID::uint32 duration_sec_;
-  ::PROTOBUF_NAMESPACE_ID::uint32 sample_hz_;
-  ::PROTOBUF_NAMESPACE_ID::int32 target_pid_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_healthcheck_2eproto;
 };
@@ -1300,30 +1100,24 @@ inline void HealthCheckResponse::set_pending(bool value) {
   // @@protoc_insertion_point(field_set:healthcheck.HealthCheckResponse.pending)
 }
 
-// .healthcheck.TaskDesc task_desc = 3;
+// .hotmethod.TaskDesc task_desc = 3;
 inline bool HealthCheckResponse::_internal_has_task_desc() const {
   return this != internal_default_instance() && task_desc_ != nullptr;
 }
 inline bool HealthCheckResponse::has_task_desc() const {
   return _internal_has_task_desc();
 }
-inline void HealthCheckResponse::clear_task_desc() {
-  if (GetArena() == nullptr && task_desc_ != nullptr) {
-    delete task_desc_;
-  }
-  task_desc_ = nullptr;
+inline const ::hotmethod::TaskDesc& HealthCheckResponse::_internal_task_desc() const {
+  const ::hotmethod::TaskDesc* p = task_desc_;
+  return p != nullptr ? *p : *reinterpret_cast<const ::hotmethod::TaskDesc*>(
+      &::hotmethod::_TaskDesc_default_instance_);
 }
-inline const ::healthcheck::TaskDesc& HealthCheckResponse::_internal_task_desc() const {
-  const ::healthcheck::TaskDesc* p = task_desc_;
-  return p != nullptr ? *p : *reinterpret_cast<const ::healthcheck::TaskDesc*>(
-      &::healthcheck::_TaskDesc_default_instance_);
-}
-inline const ::healthcheck::TaskDesc& HealthCheckResponse::task_desc() const {
+inline const ::hotmethod::TaskDesc& HealthCheckResponse::task_desc() const {
   // @@protoc_insertion_point(field_get:healthcheck.HealthCheckResponse.task_desc)
   return _internal_task_desc();
 }
 inline void HealthCheckResponse::unsafe_arena_set_allocated_task_desc(
-    ::healthcheck::TaskDesc* task_desc) {
+    ::hotmethod::TaskDesc* task_desc) {
   if (GetArena() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(task_desc_);
   }
@@ -1335,40 +1129,40 @@ inline void HealthCheckResponse::unsafe_arena_set_allocated_task_desc(
   }
   // @@protoc_insertion_point(field_unsafe_arena_set_allocated:healthcheck.HealthCheckResponse.task_desc)
 }
-inline ::healthcheck::TaskDesc* HealthCheckResponse::release_task_desc() {
+inline ::hotmethod::TaskDesc* HealthCheckResponse::release_task_desc() {
   auto temp = unsafe_arena_release_task_desc();
   if (GetArena() != nullptr) {
     temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
   }
   return temp;
 }
-inline ::healthcheck::TaskDesc* HealthCheckResponse::unsafe_arena_release_task_desc() {
+inline ::hotmethod::TaskDesc* HealthCheckResponse::unsafe_arena_release_task_desc() {
   // @@protoc_insertion_point(field_release:healthcheck.HealthCheckResponse.task_desc)
   
-  ::healthcheck::TaskDesc* temp = task_desc_;
+  ::hotmethod::TaskDesc* temp = task_desc_;
   task_desc_ = nullptr;
   return temp;
 }
-inline ::healthcheck::TaskDesc* HealthCheckResponse::_internal_mutable_task_desc() {
+inline ::hotmethod::TaskDesc* HealthCheckResponse::_internal_mutable_task_desc() {
   
   if (task_desc_ == nullptr) {
-    auto* p = CreateMaybeMessage<::healthcheck::TaskDesc>(GetArena());
+    auto* p = CreateMaybeMessage<::hotmethod::TaskDesc>(GetArena());
     task_desc_ = p;
   }
   return task_desc_;
 }
-inline ::healthcheck::TaskDesc* HealthCheckResponse::mutable_task_desc() {
+inline ::hotmethod::TaskDesc* HealthCheckResponse::mutable_task_desc() {
   // @@protoc_insertion_point(field_mutable:healthcheck.HealthCheckResponse.task_desc)
   return _internal_mutable_task_desc();
 }
-inline void HealthCheckResponse::set_allocated_task_desc(::healthcheck::TaskDesc* task_desc) {
+inline void HealthCheckResponse::set_allocated_task_desc(::hotmethod::TaskDesc* task_desc) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
   if (message_arena == nullptr) {
-    delete task_desc_;
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(task_desc_);
   }
   if (task_desc) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::GetArena(task_desc);
+      reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(task_desc)->GetArena();
     if (message_arena != submessage_arena) {
       task_desc = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, task_desc, submessage_arena);
@@ -1381,176 +1175,9 @@ inline void HealthCheckResponse::set_allocated_task_desc(::healthcheck::TaskDesc
   // @@protoc_insertion_point(field_set_allocated:healthcheck.HealthCheckResponse.task_desc)
 }
 
-// -------------------------------------------------------------------
-
-// TaskDesc
-
-// string task_id = 1;
-inline void TaskDesc::clear_task_id() {
-  task_id_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
-}
-inline const std::string& TaskDesc::task_id() const {
-  // @@protoc_insertion_point(field_get:healthcheck.TaskDesc.task_id)
-  return _internal_task_id();
-}
-inline void TaskDesc::set_task_id(const std::string& value) {
-  _internal_set_task_id(value);
-  // @@protoc_insertion_point(field_set:healthcheck.TaskDesc.task_id)
-}
-inline std::string* TaskDesc::mutable_task_id() {
-  // @@protoc_insertion_point(field_mutable:healthcheck.TaskDesc.task_id)
-  return _internal_mutable_task_id();
-}
-inline const std::string& TaskDesc::_internal_task_id() const {
-  return task_id_.Get();
-}
-inline void TaskDesc::_internal_set_task_id(const std::string& value) {
-  
-  task_id_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
-}
-inline void TaskDesc::set_task_id(std::string&& value) {
-  
-  task_id_.Set(
-    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
-  // @@protoc_insertion_point(field_set_rvalue:healthcheck.TaskDesc.task_id)
-}
-inline void TaskDesc::set_task_id(const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  
-  task_id_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
-              GetArena());
-  // @@protoc_insertion_point(field_set_char:healthcheck.TaskDesc.task_id)
-}
-inline void TaskDesc::set_task_id(const char* value,
-    size_t size) {
-  
-  task_id_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
-      reinterpret_cast<const char*>(value), size), GetArena());
-  // @@protoc_insertion_point(field_set_pointer:healthcheck.TaskDesc.task_id)
-}
-inline std::string* TaskDesc::_internal_mutable_task_id() {
-  
-  return task_id_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
-}
-inline std::string* TaskDesc::release_task_id() {
-  // @@protoc_insertion_point(field_release:healthcheck.TaskDesc.task_id)
-  return task_id_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
-}
-inline void TaskDesc::set_allocated_task_id(std::string* task_id) {
-  if (task_id != nullptr) {
-    
-  } else {
-    
-  }
-  task_id_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), task_id,
-      GetArena());
-  // @@protoc_insertion_point(field_set_allocated:healthcheck.TaskDesc.task_id)
-}
-inline std::string* TaskDesc::unsafe_arena_release_task_id() {
-  // @@protoc_insertion_point(field_unsafe_arena_release:healthcheck.TaskDesc.task_id)
-  GOOGLE_DCHECK(GetArena() != nullptr);
-  
-  return task_id_.UnsafeArenaRelease(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
-      GetArena());
-}
-inline void TaskDesc::unsafe_arena_set_allocated_task_id(
-    std::string* task_id) {
-  GOOGLE_DCHECK(GetArena() != nullptr);
-  if (task_id != nullptr) {
-    
-  } else {
-    
-  }
-  task_id_.UnsafeArenaSetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
-      task_id, GetArena());
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:healthcheck.TaskDesc.task_id)
-}
-
-// uint32 task_type = 2;
-inline void TaskDesc::clear_task_type() {
-  task_type_ = 0u;
-}
-inline ::PROTOBUF_NAMESPACE_ID::uint32 TaskDesc::_internal_task_type() const {
-  return task_type_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::uint32 TaskDesc::task_type() const {
-  // @@protoc_insertion_point(field_get:healthcheck.TaskDesc.task_type)
-  return _internal_task_type();
-}
-inline void TaskDesc::_internal_set_task_type(::PROTOBUF_NAMESPACE_ID::uint32 value) {
-  
-  task_type_ = value;
-}
-inline void TaskDesc::set_task_type(::PROTOBUF_NAMESPACE_ID::uint32 value) {
-  _internal_set_task_type(value);
-  // @@protoc_insertion_point(field_set:healthcheck.TaskDesc.task_type)
-}
-
-// uint32 duration_sec = 3;
-inline void TaskDesc::clear_duration_sec() {
-  duration_sec_ = 0u;
-}
-inline ::PROTOBUF_NAMESPACE_ID::uint32 TaskDesc::_internal_duration_sec() const {
-  return duration_sec_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::uint32 TaskDesc::duration_sec() const {
-  // @@protoc_insertion_point(field_get:healthcheck.TaskDesc.duration_sec)
-  return _internal_duration_sec();
-}
-inline void TaskDesc::_internal_set_duration_sec(::PROTOBUF_NAMESPACE_ID::uint32 value) {
-  
-  duration_sec_ = value;
-}
-inline void TaskDesc::set_duration_sec(::PROTOBUF_NAMESPACE_ID::uint32 value) {
-  _internal_set_duration_sec(value);
-  // @@protoc_insertion_point(field_set:healthcheck.TaskDesc.duration_sec)
-}
-
-// uint32 sample_hz = 4;
-inline void TaskDesc::clear_sample_hz() {
-  sample_hz_ = 0u;
-}
-inline ::PROTOBUF_NAMESPACE_ID::uint32 TaskDesc::_internal_sample_hz() const {
-  return sample_hz_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::uint32 TaskDesc::sample_hz() const {
-  // @@protoc_insertion_point(field_get:healthcheck.TaskDesc.sample_hz)
-  return _internal_sample_hz();
-}
-inline void TaskDesc::_internal_set_sample_hz(::PROTOBUF_NAMESPACE_ID::uint32 value) {
-  
-  sample_hz_ = value;
-}
-inline void TaskDesc::set_sample_hz(::PROTOBUF_NAMESPACE_ID::uint32 value) {
-  _internal_set_sample_hz(value);
-  // @@protoc_insertion_point(field_set:healthcheck.TaskDesc.sample_hz)
-}
-
-// int32 target_pid = 5;
-inline void TaskDesc::clear_target_pid() {
-  target_pid_ = 0;
-}
-inline ::PROTOBUF_NAMESPACE_ID::int32 TaskDesc::_internal_target_pid() const {
-  return target_pid_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::int32 TaskDesc::target_pid() const {
-  // @@protoc_insertion_point(field_get:healthcheck.TaskDesc.target_pid)
-  return _internal_target_pid();
-}
-inline void TaskDesc::_internal_set_target_pid(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  
-  target_pid_ = value;
-}
-inline void TaskDesc::set_target_pid(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  _internal_set_target_pid(value);
-  // @@protoc_insertion_point(field_set:healthcheck.TaskDesc.target_pid)
-}
-
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
-// -------------------------------------------------------------------
-
 // -------------------------------------------------------------------
 
 

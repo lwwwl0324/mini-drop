@@ -121,7 +121,7 @@ const char descriptor_table_protodef_common_2eproto[] PROTOBUF_SECTION_VARIABLE(
   "osConfig\022\016\n\006bucket\030\001 \001(\t\022\016\n\006region\030\002 \001(\t"
   "\022\021\n\tsecret_id\030\003 \001(\t\022\022\n\nsecret_key\030\004 \001(\t\022"
   "\r\n\005token\030\005 \001(\t\"%\n\004File\022\017\n\007content\030\001 \001(\014\022"
-  "\014\n\004path\030\002 \001(\tB\013Z\t./;commonb\006proto3"
+  "\014\n\004path\030\002 \001(\tB\nZ\010./;protob\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_common_2eproto_deps[1] = {
 };
@@ -132,7 +132,7 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_com
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_common_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_common_2eproto = {
-  false, false, descriptor_table_protodef_common_2eproto, "common.proto", 274,
+  false, false, descriptor_table_protodef_common_2eproto, "common.proto", 273,
   &descriptor_table_common_2eproto_once, descriptor_table_common_2eproto_sccs, descriptor_table_common_2eproto_deps, 3, 0,
   schemas, file_default_instances, TableStruct_common_2eproto::offsets,
   file_level_metadata_common_2eproto, 3, file_level_enum_descriptors_common_2eproto, file_level_service_descriptors_common_2eproto,

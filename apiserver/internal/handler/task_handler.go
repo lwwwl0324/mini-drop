@@ -21,7 +21,7 @@ type CreateTaskRequest struct {
 	PID          int    `json:"pid"`
 	Duration     int    `json:"duration" binding:"required"`
 	Frequency    int    `json:"frequency" binding:"required"`
-	ProfilerType string `json:"profiler_type"`
+	ProfilerType string `json:"profiler_type"` // 前端发送的是字符串: "perf" 或 "ebpf"
 }
 
 func (h *TaskHandler) CreateTask(c *gin.Context) {
@@ -46,7 +46,16 @@ func (h *TaskHandler) CreateTask(c *gin.Context) {
 		req.ProfilerType = "perf"
 	}
 
-	task, err := h.service.CreateTask(c.Request.Context(), req.TargetIP, req.PID, req.Duration, req.Frequency, req.ProfilerType)
+	// 将字符串转换为数字
+	var profilerTypeInt int
+	switch req.ProfilerType {
+	case "ebpf":
+		profilerTypeInt = 1
+	default:
+		profilerTypeInt = 0
+	}
+
+	task, err := h.service.CreateTask(c.Request.Context(), req.TargetIP, req.PID, req.Duration, req.Frequency, profilerTypeInt)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"code": 500,

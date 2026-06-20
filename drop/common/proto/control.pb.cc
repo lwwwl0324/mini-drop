@@ -91,8 +91,7 @@ const char descriptor_table_protodef_control_2eproto[] PROTOBUF_SECTION_VARIABLE
   "hotmethod.TaskDesc\"%\n\022CreateTaskResponse"
   "\022\017\n\007task_id\030\001 \001(\t2P\n\007Control\022E\n\nCreateTa"
   "sk\022\032.control.CreateTaskRequest\032\033.control"
-  ".CreateTaskResponseB\014Z\n./;controlb\006proto"
-  "3"
+  ".CreateTaskResponseB\nZ\010./;protob\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_control_2eproto_deps[1] = {
   &::descriptor_table_hotmethod_2eproto,
@@ -103,7 +102,7 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_con
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_control_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_control_2eproto = {
-  false, false, descriptor_table_protodef_control_2eproto, "control.proto", 281,
+  false, false, descriptor_table_protodef_control_2eproto, "control.proto", 279,
   &descriptor_table_control_2eproto_once, descriptor_table_control_2eproto_sccs, descriptor_table_control_2eproto_deps, 2, 1,
   schemas, file_default_instances, TableStruct_control_2eproto::offsets,
   file_level_metadata_control_2eproto, 2, file_level_enum_descriptors_control_2eproto, file_level_service_descriptors_control_2eproto,

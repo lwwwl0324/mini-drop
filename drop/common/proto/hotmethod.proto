@@ -3,7 +3,7 @@ package hotmethod;
 
 import "common.proto";
 
-option go_package = "./;hotmethod";
+option go_package = "./;proto";
 
 service Hotmethod {
   rpc NotifyResult(TaskResult) returns (Empty);

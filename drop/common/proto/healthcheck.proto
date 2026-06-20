@@ -2,8 +2,9 @@ syntax = "proto3";
 package healthcheck;
 
 import "common.proto";
+import "hotmethod.proto";
 
-option go_package = "./;healthcheck";
+option go_package = "./;proto";
 
 service HealthCheck {
   rpc Do(HealthCheckRequest) returns (HealthCheckResponse);
@@ -22,14 +23,5 @@ message HealthCheckResponse {
   enum ServingStatus { UNKNOWN=0; SERVING=1; NOT_SERVING=2; }
   ServingStatus status = 1;
   bool pending = 2;
-  TaskDesc task_desc = 3;
-}
-
-// 临时定义，后续移到 hotmethod.proto
-message TaskDesc {
-  string task_id = 1;
-  uint32 task_type = 2;
-  uint32 duration_sec = 3;
-  uint32 sample_hz = 4;
-  int32 target_pid = 5;
+  hotmethod.TaskDesc task_desc = 3;
 }

@@ -1,0 +1,45 @@
+#!/usr/bin/env bpftrace
+
+/*
+ * 文件: io_trace.bt
+ * 功能: 追踪并统计系统 IO 调用
+ * 用法: sudo bpftrace io_trace.bt
+ */
+
+BEGIN
+{
+    printf("开始追踪 IO... 按 Ctrl-C 结束\n");
+}
+
+// 追踪 openat 系统调用
+kprobe:do_sys_openat2
+{
+    @opens[comm] = count();
+}
+
+// 追踪 read 系统调用
+kprobe:ksys_read
+{
+    @reads[comm] = count();
+}
+
+// 追踪 write 系统调用
+kprobe:ksys_write
+{
+    @writes[comm] = count();
+}
+
+END
+{
+    printf("\n========== IO 统计报告 ==========\n");
+    printf("--- 打开文件次数 ---\n");
+    print(@opens);
+    printf("--- 读取次数 ---\n");
+    print(@reads);
+    printf("--- 写入次数 ---\n");
+    print(@writes);
+    
+    clear(@opens);
+    clear(@reads);
+    clear(@writes);
+}

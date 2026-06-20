@@ -15,7 +15,7 @@
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
 extern PROTOBUF_INTERNAL_EXPORT_common_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_PidStats_common_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_healthcheck_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_TaskDesc_healthcheck_2eproto;
+extern PROTOBUF_INTERNAL_EXPORT_hotmethod_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<2> scc_info_TaskDesc_hotmethod_2eproto;
 namespace healthcheck {
 class HealthCheckRequestDefaultTypeInternal {
  public:
@@ -25,10 +25,6 @@ class HealthCheckResponseDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<HealthCheckResponse> _instance;
 } _HealthCheckResponse_default_instance_;
-class TaskDescDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<TaskDesc> _instance;
-} _TaskDesc_default_instance_;
 }  // namespace healthcheck
 static void InitDefaultsscc_info_HealthCheckRequest_healthcheck_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -58,23 +54,9 @@ static void InitDefaultsscc_info_HealthCheckResponse_healthcheck_2eproto() {
 
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_HealthCheckResponse_healthcheck_2eproto =
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_HealthCheckResponse_healthcheck_2eproto}, {
-      &scc_info_TaskDesc_healthcheck_2eproto.base,}};
+      &scc_info_TaskDesc_hotmethod_2eproto.base,}};
 
-static void InitDefaultsscc_info_TaskDesc_healthcheck_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::healthcheck::_TaskDesc_default_instance_;
-    new (ptr) ::healthcheck::TaskDesc();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::healthcheck::TaskDesc::InitAsDefaultInstance();
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_TaskDesc_healthcheck_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_TaskDesc_healthcheck_2eproto}, {}};
-
-static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_healthcheck_2eproto[3];
+static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_healthcheck_2eproto[2];
 static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_healthcheck_2eproto[1];
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_healthcheck_2eproto = nullptr;
 
@@ -98,62 +80,47 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_healthcheck_2eproto::offsets[]
   PROTOBUF_FIELD_OFFSET(::healthcheck::HealthCheckResponse, status_),
   PROTOBUF_FIELD_OFFSET(::healthcheck::HealthCheckResponse, pending_),
   PROTOBUF_FIELD_OFFSET(::healthcheck::HealthCheckResponse, task_desc_),
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::healthcheck::TaskDesc, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::healthcheck::TaskDesc, task_id_),
-  PROTOBUF_FIELD_OFFSET(::healthcheck::TaskDesc, task_type_),
-  PROTOBUF_FIELD_OFFSET(::healthcheck::TaskDesc, duration_sec_),
-  PROTOBUF_FIELD_OFFSET(::healthcheck::TaskDesc, sample_hz_),
-  PROTOBUF_FIELD_OFFSET(::healthcheck::TaskDesc, target_pid_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::healthcheck::HealthCheckRequest)},
   { 11, -1, sizeof(::healthcheck::HealthCheckResponse)},
-  { 19, -1, sizeof(::healthcheck::TaskDesc)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::healthcheck::_HealthCheckRequest_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::healthcheck::_HealthCheckResponse_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::healthcheck::_TaskDesc_default_instance_),
 };
 
 const char descriptor_table_protodef_healthcheck_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\021healthcheck.proto\022\013healthcheck\032\014common"
-  ".proto\"\256\001\n\022HealthCheckRequest\022\021\n\thost_na"
-  "me\030\001 \001(\t\022\017\n\007ip_addr\030\002 \001(\t\022\013\n\003uid\030\003 \001(\t\022\025"
-  "\n\ragent_version\030\004 \001(\t\022%\n\013self_pstats\030\005 \001"
-  "(\0132\020.common.PidStats\022)\n\017children_pstats\030"
-  "\006 \001(\0132\020.common.PidStats\"\314\001\n\023HealthCheckR"
-  "esponse\022>\n\006status\030\001 \001(\0162..healthcheck.He"
-  "althCheckResponse.ServingStatus\022\017\n\007pendi"
-  "ng\030\002 \001(\010\022(\n\ttask_desc\030\003 \001(\0132\025.healthchec"
-  "k.TaskDesc\":\n\rServingStatus\022\013\n\007UNKNOWN\020\000"
-  "\022\013\n\007SERVING\020\001\022\017\n\013NOT_SERVING\020\002\"k\n\010TaskDe"
-  "sc\022\017\n\007task_id\030\001 \001(\t\022\021\n\ttask_type\030\002 \001(\r\022\024"
-  "\n\014duration_sec\030\003 \001(\r\022\021\n\tsample_hz\030\004 \001(\r\022"
-  "\022\n\ntarget_pid\030\005 \001(\0052V\n\013HealthCheck\022G\n\002Do"
-  "\022\037.healthcheck.HealthCheckRequest\032 .heal"
-  "thcheck.HealthCheckResponseB\020Z\016./;health"
-  "checkb\006proto3"
+  ".proto\032\017hotmethod.proto\"\256\001\n\022HealthCheckR"
+  "equest\022\021\n\thost_name\030\001 \001(\t\022\017\n\007ip_addr\030\002 \001"
+  "(\t\022\013\n\003uid\030\003 \001(\t\022\025\n\ragent_version\030\004 \001(\t\022%"
+  "\n\013self_pstats\030\005 \001(\0132\020.common.PidStats\022)\n"
+  "\017children_pstats\030\006 \001(\0132\020.common.PidStats"
+  "\"\312\001\n\023HealthCheckResponse\022>\n\006status\030\001 \001(\016"
+  "2..healthcheck.HealthCheckResponse.Servi"
+  "ngStatus\022\017\n\007pending\030\002 \001(\010\022&\n\ttask_desc\030\003"
+  " \001(\0132\023.hotmethod.TaskDesc\":\n\rServingStat"
+  "us\022\013\n\007UNKNOWN\020\000\022\013\n\007SERVING\020\001\022\017\n\013NOT_SERV"
+  "ING\020\0022V\n\013HealthCheck\022G\n\002Do\022\037.healthcheck"
+  ".HealthCheckRequest\032 .healthcheck.Health"
+  "CheckResponseB\nZ\010./;protob\006proto3"
   ;
-static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_healthcheck_2eproto_deps[1] = {
+static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_healthcheck_2eproto_deps[2] = {
   &::descriptor_table_common_2eproto,
+  &::descriptor_table_hotmethod_2eproto,
 };
-static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_healthcheck_2eproto_sccs[3] = {
+static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_healthcheck_2eproto_sccs[2] = {
   &scc_info_HealthCheckRequest_healthcheck_2eproto.base,
   &scc_info_HealthCheckResponse_healthcheck_2eproto.base,
-  &scc_info_TaskDesc_healthcheck_2eproto.base,
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_healthcheck_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_healthcheck_2eproto = {
-  false, false, descriptor_table_protodef_healthcheck_2eproto, "healthcheck.proto", 653,
-  &descriptor_table_healthcheck_2eproto_once, descriptor_table_healthcheck_2eproto_sccs, descriptor_table_healthcheck_2eproto_deps, 3, 1,
+  false, false, descriptor_table_protodef_healthcheck_2eproto, "healthcheck.proto", 553,
+  &descriptor_table_healthcheck_2eproto_once, descriptor_table_healthcheck_2eproto_sccs, descriptor_table_healthcheck_2eproto_deps, 2, 2,
   schemas, file_default_instances, TableStruct_healthcheck_2eproto::offsets,
-  file_level_metadata_healthcheck_2eproto, 3, file_level_enum_descriptors_healthcheck_2eproto, file_level_service_descriptors_healthcheck_2eproto,
+  file_level_metadata_healthcheck_2eproto, 2, file_level_enum_descriptors_healthcheck_2eproto, file_level_service_descriptors_healthcheck_2eproto,
 };
 
 // Force running AddDescriptors() at dynamic initialization time.
@@ -614,17 +581,23 @@ void HealthCheckRequest::InternalSwap(HealthCheckRequest* other) {
 // ===================================================================
 
 void HealthCheckResponse::InitAsDefaultInstance() {
-  ::healthcheck::_HealthCheckResponse_default_instance_._instance.get_mutable()->task_desc_ = const_cast< ::healthcheck::TaskDesc*>(
-      ::healthcheck::TaskDesc::internal_default_instance());
+  ::healthcheck::_HealthCheckResponse_default_instance_._instance.get_mutable()->task_desc_ = const_cast< ::hotmethod::TaskDesc*>(
+      ::hotmethod::TaskDesc::internal_default_instance());
 }
 class HealthCheckResponse::_Internal {
  public:
-  static const ::healthcheck::TaskDesc& task_desc(const HealthCheckResponse* msg);
+  static const ::hotmethod::TaskDesc& task_desc(const HealthCheckResponse* msg);
 };
 
-const ::healthcheck::TaskDesc&
+const ::hotmethod::TaskDesc&
 HealthCheckResponse::_Internal::task_desc(const HealthCheckResponse* msg) {
   return *msg->task_desc_;
+}
+void HealthCheckResponse::clear_task_desc() {
+  if (GetArena() == nullptr && task_desc_ != nullptr) {
+    delete task_desc_;
+  }
+  task_desc_ = nullptr;
 }
 HealthCheckResponse::HealthCheckResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
@@ -636,7 +609,7 @@ HealthCheckResponse::HealthCheckResponse(const HealthCheckResponse& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   if (from._internal_has_task_desc()) {
-    task_desc_ = new ::healthcheck::TaskDesc(*from.task_desc_);
+    task_desc_ = new ::hotmethod::TaskDesc(*from.task_desc_);
   } else {
     task_desc_ = nullptr;
   }
@@ -718,7 +691,7 @@ const char* HealthCheckResponse::_InternalParse(const char* ptr, ::PROTOBUF_NAME
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // .healthcheck.TaskDesc task_desc = 3;
+      // .hotmethod.TaskDesc task_desc = 3;
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 26)) {
           ptr = ctx->ParseMessage(_internal_mutable_task_desc(), ptr);
@@ -766,7 +739,7 @@ failure:
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(2, this->_internal_pending(), target);
   }
 
-  // .healthcheck.TaskDesc task_desc = 3;
+  // .hotmethod.TaskDesc task_desc = 3;
   if (this->has_task_desc()) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
@@ -790,7 +763,7 @@ size_t HealthCheckResponse::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // .healthcheck.TaskDesc task_desc = 3;
+  // .hotmethod.TaskDesc task_desc = 3;
   if (this->has_task_desc()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
@@ -840,7 +813,7 @@ void HealthCheckResponse::MergeFrom(const HealthCheckResponse& from) {
   (void) cached_has_bits;
 
   if (from.has_task_desc()) {
-    _internal_mutable_task_desc()->::healthcheck::TaskDesc::MergeFrom(from._internal_task_desc());
+    _internal_mutable_task_desc()->::hotmethod::TaskDesc::MergeFrom(from._internal_task_desc());
   }
   if (from.status() != 0) {
     _internal_set_status(from._internal_status());
@@ -884,322 +857,6 @@ void HealthCheckResponse::InternalSwap(HealthCheckResponse* other) {
 }
 
 
-// ===================================================================
-
-void TaskDesc::InitAsDefaultInstance() {
-}
-class TaskDesc::_Internal {
- public:
-};
-
-TaskDesc::TaskDesc(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
-  SharedCtor();
-  RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:healthcheck.TaskDesc)
-}
-TaskDesc::TaskDesc(const TaskDesc& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  task_id_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (!from._internal_task_id().empty()) {
-    task_id_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_task_id(),
-      GetArena());
-  }
-  ::memcpy(&task_type_, &from.task_type_,
-    static_cast<size_t>(reinterpret_cast<char*>(&target_pid_) -
-    reinterpret_cast<char*>(&task_type_)) + sizeof(target_pid_));
-  // @@protoc_insertion_point(copy_constructor:healthcheck.TaskDesc)
-}
-
-void TaskDesc::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_TaskDesc_healthcheck_2eproto.base);
-  task_id_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  ::memset(&task_type_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&target_pid_) -
-      reinterpret_cast<char*>(&task_type_)) + sizeof(target_pid_));
-}
-
-TaskDesc::~TaskDesc() {
-  // @@protoc_insertion_point(destructor:healthcheck.TaskDesc)
-  SharedDtor();
-  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-void TaskDesc::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
-  task_id_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-}
-
-void TaskDesc::ArenaDtor(void* object) {
-  TaskDesc* _this = reinterpret_cast< TaskDesc* >(object);
-  (void)_this;
-}
-void TaskDesc::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
-}
-void TaskDesc::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-const TaskDesc& TaskDesc::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_TaskDesc_healthcheck_2eproto.base);
-  return *internal_default_instance();
-}
-
-
-void TaskDesc::Clear() {
-// @@protoc_insertion_point(message_clear_start:healthcheck.TaskDesc)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  task_id_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
-  ::memset(&task_type_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&target_pid_) -
-      reinterpret_cast<char*>(&task_type_)) + sizeof(target_pid_));
-  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-const char* TaskDesc::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
-  while (!ctx->Done(&ptr)) {
-    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
-    switch (tag >> 3) {
-      // string task_id = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
-          auto str = _internal_mutable_task_id();
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "healthcheck.TaskDesc.task_id"));
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // uint32 task_type = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
-          task_type_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // uint32 duration_sec = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
-          duration_sec_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // uint32 sample_hz = 4;
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
-          sample_hz_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // int32 target_pid = 5;
-      case 5:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 40)) {
-          target_pid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      default: {
-      handle_unusual:
-        if ((tag & 7) == 4 || tag == 0) {
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag,
-            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-            ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-      }
-    }  // switch
-  }  // while
-success:
-  return ptr;
-failure:
-  ptr = nullptr;
-  goto success;
-#undef CHK_
-}
-
-::PROTOBUF_NAMESPACE_ID::uint8* TaskDesc::_InternalSerialize(
-    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:healthcheck.TaskDesc)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // string task_id = 1;
-  if (this->task_id().size() > 0) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_task_id().data(), static_cast<int>(this->_internal_task_id().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "healthcheck.TaskDesc.task_id");
-    target = stream->WriteStringMaybeAliased(
-        1, this->_internal_task_id(), target);
-  }
-
-  // uint32 task_type = 2;
-  if (this->task_type() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(2, this->_internal_task_type(), target);
-  }
-
-  // uint32 duration_sec = 3;
-  if (this->duration_sec() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(3, this->_internal_duration_sec(), target);
-  }
-
-  // uint32 sample_hz = 4;
-  if (this->sample_hz() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(4, this->_internal_sample_hz(), target);
-  }
-
-  // int32 target_pid = 5;
-  if (this->target_pid() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(5, this->_internal_target_pid(), target);
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:healthcheck.TaskDesc)
-  return target;
-}
-
-size_t TaskDesc::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:healthcheck.TaskDesc)
-  size_t total_size = 0;
-
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  // string task_id = 1;
-  if (this->task_id().size() > 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->_internal_task_id());
-  }
-
-  // uint32 task_type = 2;
-  if (this->task_type() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-        this->_internal_task_type());
-  }
-
-  // uint32 duration_sec = 3;
-  if (this->duration_sec() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-        this->_internal_duration_sec());
-  }
-
-  // uint32 sample_hz = 4;
-  if (this->sample_hz() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-        this->_internal_sample_hz());
-  }
-
-  // int32 target_pid = 5;
-  if (this->target_pid() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->_internal_target_pid());
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
-        _internal_metadata_, total_size, &_cached_size_);
-  }
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
-}
-
-void TaskDesc::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:healthcheck.TaskDesc)
-  GOOGLE_DCHECK_NE(&from, this);
-  const TaskDesc* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<TaskDesc>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:healthcheck.TaskDesc)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:healthcheck.TaskDesc)
-    MergeFrom(*source);
-  }
-}
-
-void TaskDesc::MergeFrom(const TaskDesc& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:healthcheck.TaskDesc)
-  GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  if (from.task_id().size() > 0) {
-    _internal_set_task_id(from._internal_task_id());
-  }
-  if (from.task_type() != 0) {
-    _internal_set_task_type(from._internal_task_type());
-  }
-  if (from.duration_sec() != 0) {
-    _internal_set_duration_sec(from._internal_duration_sec());
-  }
-  if (from.sample_hz() != 0) {
-    _internal_set_sample_hz(from._internal_sample_hz());
-  }
-  if (from.target_pid() != 0) {
-    _internal_set_target_pid(from._internal_target_pid());
-  }
-}
-
-void TaskDesc::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:healthcheck.TaskDesc)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void TaskDesc::CopyFrom(const TaskDesc& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:healthcheck.TaskDesc)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool TaskDesc::IsInitialized() const {
-  return true;
-}
-
-void TaskDesc::InternalSwap(TaskDesc* other) {
-  using std::swap;
-  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
-  task_id_.Swap(&other->task_id_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
-  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(TaskDesc, target_pid_)
-      + sizeof(TaskDesc::target_pid_)
-      - PROTOBUF_FIELD_OFFSET(TaskDesc, task_type_)>(
-          reinterpret_cast<char*>(&task_type_),
-          reinterpret_cast<char*>(&other->task_type_));
-}
-
-::PROTOBUF_NAMESPACE_ID::Metadata TaskDesc::GetMetadata() const {
-  return GetMetadataStatic();
-}
-
-
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace healthcheck
 PROTOBUF_NAMESPACE_OPEN
@@ -1208,9 +865,6 @@ template<> PROTOBUF_NOINLINE ::healthcheck::HealthCheckRequest* Arena::CreateMay
 }
 template<> PROTOBUF_NOINLINE ::healthcheck::HealthCheckResponse* Arena::CreateMaybeMessage< ::healthcheck::HealthCheckResponse >(Arena* arena) {
   return Arena::CreateMessageInternal< ::healthcheck::HealthCheckResponse >(arena);
-}
-template<> PROTOBUF_NOINLINE ::healthcheck::TaskDesc* Arena::CreateMaybeMessage< ::healthcheck::TaskDesc >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::healthcheck::TaskDesc >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

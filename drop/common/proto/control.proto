@@ -3,7 +3,7 @@ package control;
 
 import "hotmethod.proto";
 
-option go_package = "./;control";
+option go_package = "./;proto";
 
 service Control {
   rpc CreateTask(CreateTaskRequest) returns (CreateTaskResponse);
