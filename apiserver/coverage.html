@@ -1,0 +1,783 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>handler: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">mini-drop/apiserver/internal/handler/agent_handler.go (0.0%)</option>
+				
+				<option value="file1">mini-drop/apiserver/internal/handler/heartbeat_handler.go (0.0%)</option>
+				
+				<option value="file2">mini-drop/apiserver/internal/handler/task_handler.go (45.7%)</option>
+				
+				<option value="file3">mini-drop/apiserver/internal/model/agent.go (100.0%)</option>
+				
+				<option value="file4">mini-drop/apiserver/internal/model/audit_log.go (100.0%)</option>
+				
+				<option value="file5">mini-drop/apiserver/internal/model/task.go (0.0%)</option>
+				
+				<option value="file6">mini-drop/apiserver/internal/model/task_status.go (94.1%)</option>
+				
+				<option value="file7">mini-drop/apiserver/internal/service/agent_service.go (0.0%)</option>
+				
+				<option value="file8">mini-drop/apiserver/internal/service/task_service.go (11.9%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package handler
+
+import (
+        "net/http"
+
+        "github.com/gin-gonic/gin"
+
+        "mini-drop/apiserver/internal/service"
+)
+
+type AgentHandler struct {
+        service *service.AgentService
+}
+
+func NewAgentHandler(service *service.AgentService) *AgentHandler <span class="cov0" title="0">{
+        return &amp;AgentHandler{service: service}
+}</span>
+
+func (h *AgentHandler) ListAgents(c *gin.Context) <span class="cov0" title="0">{
+        agents, err := h.service.ListAgents()
+        if err != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "code": 500,
+                        "msg":  err.Error(),
+                })
+                return
+        }</span>
+        <span class="cov0" title="0">c.JSON(http.StatusOK, gin.H{
+                "code": 0,
+                "msg":  "success",
+                "data": agents,
+        })</span>
+}
+
+func (h *AgentHandler) GetAuditLogs(c *gin.Context) <span class="cov0" title="0">{
+        agentID := c.Param("agent_id")
+        logs, err := h.service.GetAuditLogs(agentID)
+        if err != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "code": 500,
+                        "msg":  err.Error(),
+                })
+                return
+        }</span>
+        <span class="cov0" title="0">c.JSON(http.StatusOK, gin.H{
+                "code": 0,
+                "msg":  "success",
+                "data": logs,
+        })</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package handler
+
+import (
+        "net/http"
+        "time"
+
+        "github.com/gin-gonic/gin"
+        "gorm.io/gorm"
+
+        "mini-drop/apiserver/internal/model"
+        "mini-drop/apiserver/internal/service"
+)
+
+type HeartbeatHandler struct {
+        service *service.AgentService
+        db      *gorm.DB
+}
+
+func NewHeartbeatHandler(service *service.AgentService, db *gorm.DB) *HeartbeatHandler <span class="cov0" title="0">{
+        return &amp;HeartbeatHandler{service: service, db: db}
+}</span>
+
+type HeartbeatRequest struct {
+        AgentID  string `json:"agent_id"`
+        Hostname string `json:"hostname"`
+        IPAddr   string `json:"ip_addr"`
+        Version  string `json:"version"`
+}
+
+func (h *HeartbeatHandler) Receive(c *gin.Context) <span class="cov0" title="0">{
+        var req HeartbeatRequest
+        if err := c.ShouldBindJSON(&amp;req); err != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "code": 400,
+                        "msg":  "参数错误: " + err.Error(),
+                })
+                return
+        }</span>
+
+        // 更新或创建 Agent
+        <span class="cov0" title="0">var agent model.Agent
+        result := h.db.Where("agent_id = ?", req.AgentID).First(&amp;agent)
+        
+        if result.Error != nil </span><span class="cov0" title="0">{
+                // 新 Agent，创建并记录上线日志
+                agent = model.Agent{
+                        AgentID:       req.AgentID,
+                        Hostname:      req.Hostname,
+                        IPAddr:        req.IPAddr,
+                        Version:       req.Version,
+                        Status:        "online",
+                        LastHeartbeat: time.Now(),
+                }
+                h.db.Create(&amp;agent)
+                
+                // 记录审计日志
+                h.createAuditLog(req.AgentID, "online", "Agent 首次上线", req.IPAddr)
+        }</span> else<span class="cov0" title="0"> {
+                oldStatus := agent.Status
+                agent.Hostname = req.Hostname
+                agent.IPAddr = req.IPAddr
+                agent.Version = req.Version
+                agent.LastHeartbeat = time.Now()
+                
+                // 如果之前是离线，现在上线了
+                if oldStatus == "offline" </span><span class="cov0" title="0">{
+                        agent.Status = "online"
+                        h.createAuditLog(req.AgentID, "online", "Agent 恢复上线", req.IPAddr)
+                }</span>
+                
+                <span class="cov0" title="0">h.db.Save(&amp;agent)</span>
+        }
+
+        <span class="cov0" title="0">c.JSON(http.StatusOK, gin.H{
+                "code": 0,
+                "msg":  "heartbeat received",
+        })</span>
+}
+
+func (h *HeartbeatHandler) createAuditLog(agentID, eventType, detail, ipAddr string) <span class="cov0" title="0">{
+        log := model.AuditLog{
+                AgentID:     agentID,
+                EventType:   eventType,
+                EventDetail: detail,
+                IPAddr:      ipAddr,
+                CreatedAt:   time.Now(),
+        }
+        h.db.Create(&amp;log)
+}</span>
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package handler
+
+import (
+        "net/http"
+
+        "github.com/gin-gonic/gin"
+
+        "mini-drop/apiserver/internal/service"
+)
+
+type TaskHandler struct {
+        service *service.TaskService
+}
+
+func NewTaskHandler(service *service.TaskService) *TaskHandler <span class="cov0" title="0">{
+        return &amp;TaskHandler{service: service}
+}</span>
+
+type CreateTaskRequest struct {
+        TargetIP     string `json:"target_ip" binding:"required"`
+        PID          int    `json:"pid"`
+        Duration     int    `json:"duration" binding:"required"`
+        Frequency    int    `json:"frequency" binding:"required"`
+        ProfilerType string `json:"profiler_type"` // perf, ebpf, pyspy
+}
+
+func (h *TaskHandler) CreateTask(c *gin.Context) <span class="cov8" title="1">{
+        var req CreateTaskRequest
+        if err := c.ShouldBindJSON(&amp;req); err != nil </span><span class="cov8" title="1">{
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "code": 400,
+                        "msg":  "参数错误: " + err.Error(),
+                })
+                return
+        }</span>
+
+        <span class="cov8" title="1">if req.PID &lt; 0 </span><span class="cov8" title="1">{
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "code": 400,
+                        "msg":  "PID 不能为负数",
+                })
+                return
+        }</span>
+
+        <span class="cov0" title="0">if req.ProfilerType == "" </span><span class="cov0" title="0">{
+                req.ProfilerType = "perf"
+        }</span>
+
+        // 将字符串转换为数字
+        <span class="cov0" title="0">var profilerTypeInt int
+        switch req.ProfilerType </span>{
+        case "ebpf":<span class="cov0" title="0">
+                profilerTypeInt = 1</span>
+        case "pyspy":<span class="cov0" title="0">
+                profilerTypeInt = 2</span>
+        default:<span class="cov0" title="0">
+                profilerTypeInt = 0</span>
+        }
+
+        <span class="cov0" title="0">println("=== DEBUG ===")
+        println("req.ProfilerType:", req.ProfilerType)
+        println("profilerTypeInt:", profilerTypeInt)
+        println("=== END DEBUG ===")
+
+        task, err := h.service.CreateTask(c.Request.Context(), req.TargetIP, req.PID, req.Duration, req.Frequency, profilerTypeInt)
+        if err != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "code": 500,
+                        "msg":  err.Error(),
+                })
+                return
+        }</span>
+
+        <span class="cov0" title="0">c.JSON(http.StatusOK, gin.H{
+                "code": 0,
+                "msg":  "success",
+                "data": task,
+        })</span>
+}
+
+func (h *TaskHandler) GetTask(c *gin.Context) <span class="cov8" title="1">{
+        taskID := c.Param("id")
+        task, err := h.service.GetTask(taskID)
+        if err != nil </span><span class="cov8" title="1">{
+                c.JSON(http.StatusNotFound, gin.H{
+                        "code": 404,
+                        "msg":  "任务不存在",
+                })
+                return
+        }</span>
+
+        <span class="cov8" title="1">c.JSON(http.StatusOK, gin.H{
+                "code": 0,
+                "msg":  "success",
+                "data": task,
+        })</span>
+}
+
+func (h *TaskHandler) ListTasks(c *gin.Context) <span class="cov8" title="1">{
+        tasks, err := h.service.ListTasks()
+        if err != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "code": 500,
+                        "msg":  err.Error(),
+                })
+                return
+        }</span>
+
+        <span class="cov8" title="1">c.JSON(http.StatusOK, gin.H{
+                "code": 0,
+                "msg":  "success",
+                "data": tasks,
+        })</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package model
+
+import (
+        "time"
+        "gorm.io/gorm"
+)
+
+// Agent Agent 信息
+type Agent struct {
+        ID            uint           `gorm:"primaryKey"`
+        AgentID       string         `gorm:"uniqueIndex;size:64;not null" json:"agent_id"`
+        Hostname      string         `gorm:"size:128" json:"hostname"`
+        IPAddr        string         `gorm:"size:64;not null" json:"ip_addr"`
+        Version       string         `gorm:"size:32" json:"version"`
+        Status        string         `gorm:"size:32;default:'online'" json:"status"` // online / offline
+        LastHeartbeat time.Time      `json:"last_heartbeat"`
+        CreatedAt     time.Time      `json:"created_at"`
+        UpdatedAt     time.Time      `json:"updated_at"`
+        DeletedAt     gorm.DeletedAt `gorm:"index" json:"-"`
+}
+
+func (Agent) TableName() string <span class="cov8" title="1">{
+        return "agents"
+}</span>
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package model
+
+import (
+        "time"
+        "gorm.io/gorm"
+)
+
+// AuditLog 审计日志
+type AuditLog struct {
+        ID          uint           `gorm:"primaryKey"`
+        AgentID     string         `gorm:"size:64;not null" json:"agent_id"`
+        EventType   string         `gorm:"size:32;not null" json:"event_type"` // online / offline / heartbeat / task_accepted / task_completed
+        EventDetail string         `gorm:"size:512" json:"event_detail"`
+        IPAddr      string         `gorm:"size:64" json:"ip_addr"`
+        CreatedAt   time.Time      `json:"created_at"`
+        DeletedAt   gorm.DeletedAt `gorm:"index" json:"-"`
+}
+
+func (AuditLog) TableName() string <span class="cov8" title="1">{
+        return "audit_logs"
+}</span>
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package model
+
+import (
+        "time"
+        "gorm.io/gorm"
+)
+
+// Task 任务表
+type Task struct {
+        ID            uint           `gorm:"primaryKey"`
+        TaskID        string         `gorm:"uniqueIndex;size:64;not null" json:"task_id"`
+        TargetIP      string         `gorm:"size:64;not null" json:"target_ip"`
+        PID           int            `json:"pid"`
+        Duration      int            `json:"duration"`
+        Frequency     int            `json:"frequency"`
+        ProfilerType  string         `gorm:"size:32;default:'0'" json:"profiler_type"`
+        Status        string         `gorm:"size:32;default:'pending'" json:"status"`
+        StatusMsg     string         `gorm:"size:256" json:"status_msg"`
+        StatusReason  string         `gorm:"size:256" json:"status_reason"`  // 新增：状态变化原因
+        FlamegraphURL string         `gorm:"size:512" json:"flamegraph_url"`
+        CreatedAt     time.Time      `json:"created_at"`
+        UpdatedAt     time.Time      `json:"updated_at"`
+        DeletedAt     gorm.DeletedAt `gorm:"index" json:"-"`
+}
+
+func (Task) TableName() string <span class="cov0" title="0">{
+        return "tasks"
+}</span>
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package model
+
+import (
+        "fmt"
+        "time"
+)
+
+// TaskStatus 任务状态枚举
+type TaskStatus string
+
+const (
+        StatusPending   TaskStatus = "pending"
+        StatusRunning   TaskStatus = "running"
+        StatusUploading TaskStatus = "uploading"
+        StatusDone      TaskStatus = "done"
+        StatusFailed    TaskStatus = "failed"
+)
+
+// StatusReason 状态变化原因
+type StatusReason string
+
+const (
+        ReasonCreated           StatusReason = "task_created"
+        ReasonAgentAccepted     StatusReason = "agent_accepted"
+        ReasonAgentRejected     StatusReason = "agent_rejected"
+        ReasonPerfStarted       StatusReason = "perf_started"
+        ReasonPerfCompleted     StatusReason = "perf_completed"
+        ReasonPerfFailed        StatusReason = "perf_failed"
+        ReasonEBPFStarted       StatusReason = "ebpf_started"
+        ReasonEBPFCompleted     StatusReason = "ebpf_completed"
+        ReasonEBPFFailed        StatusReason = "ebpf_failed"
+        ReasonUploadStarted     StatusReason = "upload_started"
+        ReasonUploadCompleted   StatusReason = "upload_completed"
+        ReasonUploadFailed      StatusReason = "upload_failed"
+        ReasonFlamegraphStarted StatusReason = "flamegraph_started"
+        ReasonFlamegraphDone    StatusReason = "flamegraph_generated"
+        ReasonFlamegraphFailed  StatusReason = "flamegraph_failed"
+        ReasonGRPCTimeout       StatusReason = "grpc_timeout"
+        ReasonGRPCFailed        StatusReason = "grpc_failed"
+        ReasonAgentOffline      StatusReason = "agent_offline"
+        ReasonTimeout           StatusReason = "task_timeout"
+)
+
+// StatusTransition 状态迁移记录
+type StatusTransition struct {
+        From   TaskStatus   `json:"from"`
+        To     TaskStatus   `json:"to"`
+        Reason StatusReason `json:"reason"`
+        Msg    string       `json:"msg"`
+        Time   time.Time    `json:"time"`
+}
+
+// Transition 执行状态迁移
+func (t *Task) Transition(to TaskStatus, reason StatusReason, msg string) (*StatusTransition, error) <span class="cov8" title="1">{
+        from := TaskStatus(t.Status)
+        
+        // 验证状态迁移是否合法
+        if !isValidTransition(from, to) </span><span class="cov8" title="1">{
+                return nil, fmt.Errorf("非法状态迁移: %s -&gt; %s", from, to)
+        }</span>
+        
+        // 执行迁移
+        <span class="cov8" title="1">t.Status = string(to)
+        t.StatusReason = string(reason)
+        if msg != "" </span><span class="cov8" title="1">{
+                t.StatusMsg = msg
+        }</span>
+        <span class="cov8" title="1">t.UpdatedAt = time.Now()
+        
+        return &amp;StatusTransition{
+                From:   from,
+                To:     to,
+                Reason: reason,
+                Msg:    msg,
+                Time:   t.UpdatedAt,
+        }, nil</span>
+}
+
+// isValidTransition 验证状态迁移是否合法
+func isValidTransition(from, to TaskStatus) bool <span class="cov8" title="1">{
+        // 定义合法的状态迁移
+        validTransitions := map[TaskStatus][]TaskStatus{
+                StatusPending:   {StatusRunning, StatusFailed},
+                StatusRunning:   {StatusUploading, StatusFailed},
+                StatusUploading: {StatusDone, StatusFailed},
+                StatusDone:      {}, // 终态，不能迁移
+                StatusFailed:    {}, // 终态，不能迁移
+        }
+        
+        allowed, ok := validTransitions[from]
+        if !ok </span><span class="cov0" title="0">{
+                return false
+        }</span>
+        
+        <span class="cov8" title="1">for _, allowedTo := range allowed </span><span class="cov8" title="1">{
+                if allowedTo == to </span><span class="cov8" title="1">{
+                        return true
+                }</span>
+        }
+        <span class="cov8" title="1">return false</span>
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package service
+
+import (
+        "time"
+
+        "gorm.io/gorm"
+
+        "mini-drop/apiserver/internal/model"
+)
+
+type AgentService struct {
+        db *gorm.DB
+}
+
+func NewAgentService(db *gorm.DB) *AgentService <span class="cov0" title="0">{
+        return &amp;AgentService{db: db}
+}</span>
+
+type AgentInfo struct {
+        UID           string    `json:"uid"`
+        Hostname      string    `json:"hostname"`
+        IPAddr        string    `json:"ip_addr"`
+        Version       string    `json:"version"`
+        LastHeartbeat time.Time `json:"last_heartbeat"`
+        Status        string    `json:"status"`
+}
+
+// CreateAuditLog 公开方法，用于创建审计日志
+func (s *AgentService) CreateAuditLog(agentID, eventType, detail, ipAddr string) <span class="cov0" title="0">{
+        log := model.AuditLog{
+                AgentID:     agentID,
+                EventType:   eventType,
+                EventDetail: detail,
+                IPAddr:      ipAddr,
+                CreatedAt:   time.Now(),
+        }
+        s.db.Create(&amp;log)
+}</span>
+
+func (s *AgentService) ListAgents() ([]AgentInfo, error) <span class="cov0" title="0">{
+        var agents []model.Agent
+        if err := s.db.Find(&amp;agents).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">now := time.Now()
+        for i := range agents </span><span class="cov0" title="0">{
+                if agents[i].Status == "online" </span><span class="cov0" title="0">{
+                        elapsed := now.Sub(agents[i].LastHeartbeat).Seconds()
+                        if elapsed &gt; 30 </span><span class="cov0" title="0">{
+                                agents[i].Status = "offline"
+                                s.db.Save(&amp;agents[i])
+                                s.CreateAuditLog(agents[i].AgentID, "offline", "Agent 离线 (心跳超时 30 秒)", agents[i].IPAddr)
+                        }</span>
+                }
+        }
+
+        <span class="cov0" title="0">result := make([]AgentInfo, len(agents))
+        for i, a := range agents </span><span class="cov0" title="0">{
+                result[i] = AgentInfo{
+                        UID:           a.AgentID,
+                        Hostname:      a.Hostname,
+                        IPAddr:        a.IPAddr,
+                        Version:       a.Version,
+                        LastHeartbeat: a.LastHeartbeat,
+                        Status:        a.Status,
+                }
+        }</span>
+        <span class="cov0" title="0">return result, nil</span>
+}
+
+func (s *AgentService) UpsertAgent(agentID, hostname, ipAddr, version, status string) error <span class="cov0" title="0">{
+        agent := model.Agent{
+                AgentID:       agentID,
+                Hostname:      hostname,
+                IPAddr:        ipAddr,
+                Version:       version,
+                Status:        status,
+                LastHeartbeat: time.Now(),
+        }
+        return s.db.Where("agent_id = ?", agentID).Assign(agent).FirstOrCreate(&amp;agent).Error
+}</span>
+
+func (s *AgentService) GetAuditLogs(agentID string) ([]model.AuditLog, error) <span class="cov0" title="0">{
+        var logs []model.AuditLog
+        err := s.db.Where("agent_id = ?", agentID).Order("created_at DESC").Limit(100).Find(&amp;logs).Error
+        return logs, err
+}</span>
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package service
+
+import (
+        "context"
+        "fmt"
+        "os/exec"
+        "time"
+
+        "gorm.io/gorm"
+
+        "mini-drop/apiserver/internal/client"
+        "mini-drop/apiserver/internal/model"
+        "mini-drop/apiserver/internal/storage"
+)
+
+type TaskService struct {
+        dropClient *client.DropClient
+        Db         *gorm.DB
+        storage    *storage.MinioClient
+}
+
+func NewTaskService(dropClient *client.DropClient, db *gorm.DB, storage *storage.MinioClient) *TaskService <span class="cov0" title="0">{
+        return &amp;TaskService{
+                dropClient: dropClient,
+                Db:         db,
+                storage:    storage,
+        }
+}</span>
+
+func (s *TaskService) CreateTask(ctx context.Context, targetIP string, pid, duration, frequency int, profilerType int) (*model.Task, error) <span class="cov0" title="0">{
+        taskID := fmt.Sprintf("task_%d", time.Now().Unix())
+
+        task := &amp;model.Task{
+                TaskID:       taskID,
+                TargetIP:     targetIP,
+                PID:          pid,
+                Duration:     duration,
+                Frequency:    frequency,
+                ProfilerType: fmt.Sprintf("%d", profilerType),
+                Status:       string(model.StatusPending),
+                StatusMsg:    "任务已创建，等待下发",
+                StatusReason: string(model.ReasonCreated),
+        }
+
+        if err := s.Db.Create(task).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("保存任务失败: %v", err)
+        }</span>
+
+        <span class="cov0" title="0">_, err := s.dropClient.CreateTask(ctx, targetIP, taskID, pid, duration, frequency, profilerType)
+        if err != nil </span><span class="cov0" title="0">{
+                task.Transition(model.StatusFailed, model.ReasonGRPCFailed, fmt.Sprintf("gRPC 调用失败: %v", err))
+                s.Db.Save(task)
+                return task, err
+        }</span>
+
+        <span class="cov0" title="0">task.Transition(model.StatusRunning, model.ReasonAgentAccepted, "任务已下发，等待 Agent 采集")
+        s.Db.Save(task)
+
+        go s.handleTaskCompletion(task)
+
+        return task, nil</span>
+}
+
+func (s *TaskService) handleTaskCompletion(task *model.Task) <span class="cov0" title="0">{
+        taskID := task.TaskID
+        profilerType := task.ProfilerType
+        duration := task.Duration
+
+        waitTime := time.Duration(duration+15) * time.Second
+        fmt.Printf("[Auto] 等待 %v 后检查任务 %s\n", waitTime, taskID)
+        time.Sleep(waitTime)
+
+        var objectName string
+        switch profilerType </span>{
+        case "1":<span class="cov0" title="0">
+                objectName = fmt.Sprintf("%s/bpftrace.log", taskID)</span>
+        case "2":<span class="cov0" title="0">
+                objectName = fmt.Sprintf("%s/pyspy.svg", taskID)</span>
+        default:<span class="cov0" title="0">
+                objectName = fmt.Sprintf("%s/perf.data", taskID)</span>
+        }
+
+        <span class="cov0" title="0">fmt.Printf("[Auto] 检查 MinIO: %s\n", objectName)
+
+        exists, err := s.storage.ObjectExists("drop-data", objectName)
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Printf("[Auto] 检查 MinIO 失败: %v\n", err)
+                task.Transition(model.StatusFailed, model.ReasonPerfFailed, fmt.Sprintf("检查 MinIO 失败: %v", err))
+                s.Db.Save(task)
+                return
+        }</span>
+
+        <span class="cov0" title="0">if exists </span><span class="cov0" title="0">{
+                task.Transition(model.StatusUploading, model.ReasonPerfCompleted, "采集完成，准备上传")
+                s.Db.Save(task)
+
+                if profilerType == "0" </span><span class="cov0" title="0">{
+                        cmd := exec.Command("python3", "/app/scripts/generate_flamegraph.py", taskID)
+                        output, cmdErr := cmd.CombinedOutput()
+                        if cmdErr != nil </span><span class="cov0" title="0">{
+                                task.Transition(model.StatusFailed, model.ReasonFlamegraphFailed, fmt.Sprintf("火焰图生成失败: %v", cmdErr))
+                                s.Db.Save(task)
+                                fmt.Printf("[Auto] 火焰图生成失败: %v, %s\n", cmdErr, string(output))
+                                return
+                        }</span>
+                }
+
+                <span class="cov0" title="0">flamegraphURL := fmt.Sprintf("http://localhost:9001/buckets/drop-data/browse?prefix=%s/", taskID)
+                task.Transition(model.StatusDone, model.ReasonFlamegraphDone, "采集完成")
+                task.FlamegraphURL = flamegraphURL
+                s.Db.Save(task)
+                fmt.Printf("[Auto] 任务 %s 完成\n", taskID)</span>
+        } else<span class="cov0" title="0"> {
+                task.Transition(model.StatusFailed, model.ReasonPerfFailed, fmt.Sprintf("未在 MinIO 找到文件: %s", objectName))
+                s.Db.Save(task)
+                fmt.Printf("[Auto] 任务 %s 失败: 未找到文件 %s\n", taskID, objectName)
+        }</span>
+}
+
+func (s *TaskService) GetTask(taskID string) (*model.Task, error) <span class="cov8" title="1">{
+        var task model.Task
+        err := s.Db.Where("task_id = ?", taskID).First(&amp;task).Error
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">return &amp;task, nil</span>
+}
+
+func (s *TaskService) ListTasks() ([]model.Task, error) <span class="cov8" title="1">{
+        var tasks []model.Task
+        err := s.Db.Order("created_at DESC").Find(&amp;tasks).Error
+        return tasks, err
+}</span>
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
