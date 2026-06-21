@@ -50,13 +50,12 @@ const TaskList = () => {
       
       setSubmitting(true);
       
-      // 直接发送字符串 "perf" 或 "ebpf"
       const res = await createTask({
         target_ip: values.target_ip || '127.0.0.1',
         pid: values.pid || 0,
         duration: values.duration || 10,
         frequency: values.frequency || 999,
-        profiler_type: values.profiler_type || 'perf',  // 直接发送字符串
+        profiler_type: values.profiler_type || 'perf',
       });
       
       console.log('✅ 任务创建成功:', res.data);
@@ -190,7 +189,7 @@ const TaskList = () => {
             label="进程 PID" 
             name="pid" 
             initialData={0}
-            help="输入 0 表示采样整个系统"
+            help="输入 0 表示采样整个系统（仅 perf 支持）"
           >
             <InputNumber placeholder="输入 PID" min={0} step={1} theme="normal" />
           </FormItem>
@@ -205,6 +204,7 @@ const TaskList = () => {
               options={[
                 { label: 'perf (CPU采样)', value: 'perf' },
                 { label: 'eBPF (IO追踪)', value: 'ebpf' },
+                { label: 'py-spy (Python)', value: 'pyspy' },
               ]}
             />
           </FormItem>

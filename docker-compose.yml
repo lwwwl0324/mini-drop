@@ -1,33 +1,106 @@
-version: '3.8'
-
 services:
-  # PostgreSQL 数据库
   postgres:
     image: postgres:14
-    container_name: drop-postgres
+    container_name: mini-drop-postgres
     environment:
       POSTGRES_USER: drop
       POSTGRES_PASSWORD: drop123
       POSTGRES_DB: drop
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U drop -d drop"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  # MinIO 对象存储
   minio:
     image: minio/minio:latest
-    container_name: drop-minio
-    command: server /data --console-address ":9001"
+    container_name: mini-drop-minio
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin123
+    volumes:
+      - minio_data:/data
     ports:
       - "9000:9000"
       - "9001:9001"
-    volumes:
-      - minio_data:/data
+    command: server /data --console-address ":9001"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  drop_server:
+    build:
+      context: ./drop
+      dockerfile: Dockerfile
+    container_name: mini-drop-server
+    ports:
+      - "50051:50051"
+    depends_on:
+      - postgres
+      - minio
+    restart: unless-stopped
+
+  drop_agent:
+    build:
+      context: ./drop
+      dockerfile: Dockerfile.agent
+    container_name: mini-drop-agent
+    network_mode: host
+    privileged: true
+    pid: host
+    cap_add:
+      - SYS_ADMIN
+      - PERFMON
+      - SYS_PTRACE
+    environment:
+      - DROP_SERVER_ADDR=localhost:50051
+    depends_on:
+      - drop_server
+    restart: unless-stopped
+
+  apiserver:
+    build:
+      context: ./apiserver
+      dockerfile: Dockerfile
+    container_name: mini-drop-apiserver
+    environment:
+      - DB_HOST=postgres
+      - DB_USER=drop
+      - DB_PASSWORD=drop123
+      - DB_NAME=drop
+      - DB_PORT=5432
+      - DROP_SERVER_ADDR=drop_server:50051
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin123
+    ports:
+      - "8191:8191"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      drop_server:
+        condition: service_started
+    restart: unless-stopped
+
+  web_frontend:
+    build:
+      context: ./web_frontend
+      dockerfile: Dockerfile
+    container_name: mini-drop-web
+    ports:
+      - "80:80"
+    depends_on:
+      - apiserver
     restart: unless-stopped
 
 volumes:

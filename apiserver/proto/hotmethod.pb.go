@@ -22,14 +22,15 @@ const (
 )
 
 type TaskDesc struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	TaskId        string                 `protobuf:"bytes,1,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"`
-	TaskType      uint32                 `protobuf:"varint,2,opt,name=task_type,json=taskType,proto3" json:"task_type,omitempty"`
-	ProfilerType  uint32                 `protobuf:"varint,3,opt,name=profiler_type,json=profilerType,proto3" json:"profiler_type,omitempty"`
-	SampleArgv    *RecordArgv            `protobuf:"bytes,4,opt,name=sample_argv,json=sampleArgv,proto3" json:"sample_argv,omitempty"`
-	ContainerName string                 `protobuf:"bytes,5,opt,name=container_name,json=containerName,proto3" json:"container_name,omitempty"`
-	TimeoutSec    uint32                 `protobuf:"varint,7,opt,name=timeout_sec,json=timeoutSec,proto3" json:"timeout_sec,omitempty"`
-	CosConfig     *CosConfig             `protobuf:"bytes,8,opt,name=cos_config,json=cosConfig,proto3" json:"cos_config,omitempty"`
+	state    protoimpl.MessageState `protogen:"open.v1"`
+	TaskId   string                 `protobuf:"bytes,1,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"`
+	TaskType uint32                 `protobuf:"varint,2,opt,name=task_type,json=taskType,proto3" json:"task_type,omitempty"`
+	// profiler_type: 0=perf, 1=eBPF, 2=py-spy
+	ProfilerType  uint32      `protobuf:"varint,3,opt,name=profiler_type,json=profilerType,proto3" json:"profiler_type,omitempty"`
+	SampleArgv    *RecordArgv `protobuf:"bytes,4,opt,name=sample_argv,json=sampleArgv,proto3" json:"sample_argv,omitempty"`
+	ContainerName string      `protobuf:"bytes,5,opt,name=container_name,json=containerName,proto3" json:"container_name,omitempty"`
+	TimeoutSec    uint32      `protobuf:"varint,7,opt,name=timeout_sec,json=timeoutSec,proto3" json:"timeout_sec,omitempty"`
+	CosConfig     *CosConfig  `protobuf:"bytes,8,opt,name=cos_config,json=cosConfig,proto3" json:"cos_config,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }

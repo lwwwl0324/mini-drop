@@ -63,3 +63,6 @@ target_link_libraries(drop_agent
     ${GRPC_LIBRARIES} 
     pthread
 )
+find_package(CURL REQUIRED)
+target_link_libraries(drop_server ${GRPC_LIBRARIES} pthread ${CURL_LIBRARIES})
+target_link_libraries(drop_agent ${GRPC_LIBRARIES} pthread ${CURL_LIBRARIES})

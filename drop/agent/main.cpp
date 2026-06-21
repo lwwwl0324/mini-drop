@@ -39,14 +39,19 @@ public:
                 
                 if (response.pending()) {
                     const auto& task = response.task_desc();
+                    uint32_t profiler = task.profiler_type();
+                    
                     std::cout << "[Task] 收到任务: " << task.task_id() 
-                              << ", Profiler: " << task.profiler_type()
+                              << ", Profiler: " << profiler
                               << ", PID: " << task.sample_argv().pid() 
                               << ", " << task.sample_argv().hz() << "Hz, " 
                               << task.sample_argv().duration() << "秒" << std::endl;
                     
-                    if (task.profiler_type() == 1) {
+                    // 根据 profiler_type 选择采集器（单次判断）
+                    if (profiler == 1) {
                         ExecuteBpftrace(task);
+                    } else if (profiler == 2) {
+                        ExecutePySpy(task);
                     } else {
                         ExecutePerf(task);
                     }
@@ -91,7 +96,7 @@ private:
                 std::cout << "[Perf] 成功: " << data_file << std::endl;
                 
                 std::string object_name = task.task_id() + "/perf.data";
-                std::string upload_cmd = "python3 /home/lwl/mini-drop/scripts/upload_perf.py drop-data " + object_name + " " + data_file;
+                std::string upload_cmd = "python3 /app/scripts/upload_perf.py drop-data " + object_name + " " + data_file;
                 system(upload_cmd.c_str());
             } else {
                 std::cout << "[Perf] 失败，退出码: " << WEXITSTATUS(status) << std::endl;
@@ -100,7 +105,7 @@ private:
     }
     
     void ExecuteBpftrace(const hotmethod::TaskDesc& task) {
-        std::string script_path = "/home/lwl/mini-drop/scripts/io_trace.bt";
+        std::string script_path = "/app/scripts/io_trace.bt";
         std::string log_file = "/tmp/bpftrace_" + task.task_id() + ".log";
         std::string duration = std::to_string(task.sample_argv().duration());
         
@@ -123,10 +128,42 @@ private:
                 system(cat_cmd.c_str());
                 
                 std::string object_name = task.task_id() + "/bpftrace.log";
-                std::string upload_cmd = "python3 /home/lwl/mini-drop/scripts/upload_perf.py drop-data " + object_name + " " + log_file;
+                std::string upload_cmd = "python3 /app/scripts/upload_perf.py drop-data " + object_name + " " + log_file;
                 system(upload_cmd.c_str());
             } else {
                 std::cout << "[eBPF] 失败，退出码: " << WEXITSTATUS(status) << std::endl;
+            }
+        }
+    }
+    
+    void ExecutePySpy(const hotmethod::TaskDesc& task) {
+        std::string output_file = "/tmp/pyspy_" + task.task_id() + ".svg";
+        std::string duration = std::to_string(task.sample_argv().duration());
+        std::string pid = std::to_string(task.sample_argv().pid());
+        
+        std::string cmd = "py-spy record -o " + output_file + 
+                          " --duration " + duration +
+                          " --pid " + pid +
+                          " --format flamegraph 2>&1";
+        
+        std::cout << "[py-spy] 执行: " << cmd << std::endl;
+        
+        pid_t child = fork();
+        if (child == 0) {
+            execl("/bin/sh", "sh", "-c", cmd.c_str(), nullptr);
+            exit(1);
+        } else if (child > 0) {
+            int status;
+            waitpid(child, &status, 0);
+            
+            if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
+                std::cout << "[py-spy] 成功: " << output_file << std::endl;
+                
+                std::string object_name = task.task_id() + "/pyspy.svg";
+                std::string upload_cmd = "python3 /app/scripts/upload_perf.py drop-data " + object_name + " " + output_file;
+                system(upload_cmd.c_str());
+            } else {
+                std::cout << "[py-spy] 失败，退出码: " << WEXITSTATUS(status) << std::endl;
             }
         }
     }

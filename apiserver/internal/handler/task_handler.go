@@ -21,7 +21,7 @@ type CreateTaskRequest struct {
 	PID          int    `json:"pid"`
 	Duration     int    `json:"duration" binding:"required"`
 	Frequency    int    `json:"frequency" binding:"required"`
-	ProfilerType string `json:"profiler_type"` // 前端发送的是字符串: "perf" 或 "ebpf"
+	ProfilerType string `json:"profiler_type"` // perf, ebpf, pyspy
 }
 
 func (h *TaskHandler) CreateTask(c *gin.Context) {
@@ -51,9 +51,16 @@ func (h *TaskHandler) CreateTask(c *gin.Context) {
 	switch req.ProfilerType {
 	case "ebpf":
 		profilerTypeInt = 1
+	case "pyspy":
+		profilerTypeInt = 2
 	default:
 		profilerTypeInt = 0
 	}
+
+	println("=== DEBUG ===")
+	println("req.ProfilerType:", req.ProfilerType)
+	println("profilerTypeInt:", profilerTypeInt)
+	println("=== END DEBUG ===")
 
 	task, err := h.service.CreateTask(c.Request.Context(), req.TargetIP, req.PID, req.Duration, req.Frequency, profilerTypeInt)
 	if err != nil {

@@ -10,17 +10,20 @@ import (
 
 	"mini-drop/apiserver/internal/client"
 	"mini-drop/apiserver/internal/model"
+	"mini-drop/apiserver/internal/storage"
 )
 
 type TaskService struct {
 	dropClient *client.DropClient
 	db         *gorm.DB
+	storage    *storage.MinioClient
 }
 
-func NewTaskService(dropClient *client.DropClient, db *gorm.DB) *TaskService {
+func NewTaskService(dropClient *client.DropClient, db *gorm.DB, storage *storage.MinioClient) *TaskService {
 	return &TaskService{
 		dropClient: dropClient,
 		db:         db,
+		storage:    storage,
 	}
 }
 
@@ -34,8 +37,9 @@ func (s *TaskService) CreateTask(ctx context.Context, targetIP string, pid, dura
 		Duration:     duration,
 		Frequency:    frequency,
 		ProfilerType: fmt.Sprintf("%d", profilerType),
-		Status:       "pending",
+		Status:       string(model.StatusPending),
 		StatusMsg:    "任务已创建，等待下发",
+		StatusReason: string(model.ReasonCreated),
 	}
 
 	if err := s.db.Create(task).Error; err != nil {
@@ -44,49 +48,75 @@ func (s *TaskService) CreateTask(ctx context.Context, targetIP string, pid, dura
 
 	_, err := s.dropClient.CreateTask(ctx, targetIP, taskID, pid, duration, frequency, profilerType)
 	if err != nil {
-		task.Status = "failed"
-		task.StatusMsg = err.Error()
+		task.Transition(model.StatusFailed, model.ReasonGRPCFailed, fmt.Sprintf("gRPC 调用失败: %v", err))
 		s.db.Save(task)
 		return task, err
 	}
 
-	task.Status = "running"
-	task.StatusMsg = "任务已下发，Agent 正在采集"
+	task.Transition(model.StatusRunning, model.ReasonAgentAccepted, "任务已下发，等待 Agent 采集")
 	s.db.Save(task)
 
-	go s.autoGenerateFlamegraph(taskID, duration, pid, profilerType)
+	go s.handleTaskCompletion(task)
 
 	return task, nil
 }
 
-func (s *TaskService) autoGenerateFlamegraph(taskID string, duration, pid, profilerType int) {
+func (s *TaskService) handleTaskCompletion(task *model.Task) {
+	taskID := task.TaskID
+	profilerType := task.ProfilerType
+	duration := task.Duration
+
 	waitTime := time.Duration(duration+15) * time.Second
-	fmt.Printf("[Auto] 等待 %v 后生成火焰图\n", waitTime)
+	fmt.Printf("[Auto] 等待 %v 后检查任务 %s\n", waitTime, taskID)
 	time.Sleep(waitTime)
 
-	var cmd *exec.Cmd
-	if profilerType == 1 {
-		// eBPF 采集：直接显示日志
-		logFile := fmt.Sprintf("/tmp/bpftrace_%s.log", taskID)
-		cmd = exec.Command("bash", "-c", fmt.Sprintf("cat %s", logFile))
-	} else {
-		cmd = exec.Command("python3", "/home/lwl/mini-drop/scripts/generate_flamegraph.py", taskID)
+	// 从 MinIO 检查文件是否存在
+	var objectName string
+	switch profilerType {
+	case "1": // eBPF
+		objectName = fmt.Sprintf("%s/bpftrace.log", taskID)
+	case "2": // py-spy
+		objectName = fmt.Sprintf("%s/pyspy.svg", taskID)
+	default: // perf
+		objectName = fmt.Sprintf("%s/perf.data", taskID)
 	}
 
-	output, err := cmd.CombinedOutput()
+	fmt.Printf("[Auto] 检查 MinIO: %s\n", objectName)
+
+	exists, err := s.storage.ObjectExists("drop-data", objectName)
 	if err != nil {
-		fmt.Printf("[Auto] 火焰图生成失败: %v, %s\n", err, string(output))
+		fmt.Printf("[Auto] 检查 MinIO 失败: %v\n", err)
+		task.Transition(model.StatusFailed, model.ReasonPerfFailed, fmt.Sprintf("检查 MinIO 失败: %v", err))
+		s.db.Save(task)
 		return
 	}
 
-	fmt.Printf("[Auto] 火焰图生成成功: %s\n", taskID)
+	if exists {
+		task.Transition(model.StatusUploading, model.ReasonPerfCompleted, "采集完成，准备上传")
+		s.db.Save(task)
 
-	flamegraphURL := fmt.Sprintf("http://localhost:9001/buckets/drop-data/browse?prefix=%s/", taskID)
-	s.db.Model(&model.Task{}).Where("task_id = ?", taskID).Updates(map[string]interface{}{
-		"status":         "done",
-		"status_msg":     "采集完成，火焰图已生成",
-		"flamegraph_url": flamegraphURL,
-	})
+		// 如果是 perf，生成火焰图（py-spy 和 eBPF 已经直接生成 SVG）
+		if profilerType == "0" {
+			cmd := exec.Command("python3", "/app/scripts/generate_flamegraph.py", taskID)
+			output, cmdErr := cmd.CombinedOutput()
+			if cmdErr != nil {
+				task.Transition(model.StatusFailed, model.ReasonFlamegraphFailed, fmt.Sprintf("火焰图生成失败: %v", cmdErr))
+				s.db.Save(task)
+				fmt.Printf("[Auto] 火焰图生成失败: %v, %s\n", cmdErr, string(output))
+				return
+			}
+		}
+
+		flamegraphURL := fmt.Sprintf("http://localhost:9001/buckets/drop-data/browse?prefix=%s/", taskID)
+		task.Transition(model.StatusDone, model.ReasonFlamegraphDone, "采集完成")
+		task.FlamegraphURL = flamegraphURL
+		s.db.Save(task)
+		fmt.Printf("[Auto] 任务 %s 完成\n", taskID)
+	} else {
+		task.Transition(model.StatusFailed, model.ReasonPerfFailed, fmt.Sprintf("未在 MinIO 找到文件: %s", objectName))
+		s.db.Save(task)
+		fmt.Printf("[Auto] 任务 %s 失败: 未找到文件 %s\n", taskID, objectName)
+	}
 }
 
 func (s *TaskService) GetTask(taskID string) (*model.Task, error) {
