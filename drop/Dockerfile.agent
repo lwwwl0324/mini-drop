@@ -1,6 +1,6 @@
 FROM ubuntu:22.04
 
-# 安装依赖
+# 安装依赖（包括 perf）
 RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -y \
     protobuf-compiler-grpc \
     libcurl4-openssl-dev \
     linux-tools-common \
-    linux-tools-generic \
+    linux-tools-6.8.0-124-generic \
+    linux-cloud-tools-6.8.0-124-generic \
     bpftrace \
     perl \
     python3 \
@@ -19,10 +20,13 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
+# 创建 perf 软链接（如果 perf 被安装到其他位置）
+RUN ln -sf /usr/lib/linux-tools/6.8.0-124-generic/perf /usr/bin/perf 2>/dev/null || true
+
 # 安装 Python 依赖
 RUN pip3 install minio py-spy
 
-# 安装 FlameGraph（使用 gitee 镜像）
+# 安装 FlameGraph
 RUN cd /opt && \
     git clone https://gitee.com/mirrors/FlameGraph.git
 

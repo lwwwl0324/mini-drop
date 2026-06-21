@@ -82,12 +82,27 @@ func (s *TaskService) handleTaskCompletion(task *model.Task) {
 
 	fmt.Printf("[Auto] 检查 MinIO: %s\n", objectName)
 
+	// 如果 storage 为 nil，跳过检查并标记为完成
+	if s.storage == nil {
+		fmt.Printf("[Auto] storage 未初始化，跳过检查\n")
+		flamegraphURL := fmt.Sprintf("http://localhost:9001/buckets/drop-data/browse?prefix=%s/", taskID)
+		task.Transition(model.StatusDone, model.ReasonFlamegraphDone, "采集完成（跳过 MinIO 检查）")
+		task.FlamegraphURL = flamegraphURL
+		s.Db.Save(task)
+		return
+	}
+
 	exists, err := s.storage.ObjectExists("drop-data", objectName)
 	if err != nil {
 		fmt.Printf("[Auto] 检查 MinIO 失败: %v\n", err)
-		task.Transition(model.StatusFailed, model.ReasonPerfFailed, fmt.Sprintf("检查 MinIO 失败: %v", err))
-		s.Db.Save(task)
-		return
+		// 不立即失败，等待更长时间
+		time.Sleep(10 * time.Second)
+		exists, err = s.storage.ObjectExists("drop-data", objectName)
+		if err != nil {
+			task.Transition(model.StatusFailed, model.ReasonPerfFailed, fmt.Sprintf("检查 MinIO 失败: %v", err))
+			s.Db.Save(task)
+			return
+		}
 	}
 
 	if exists {
@@ -111,6 +126,19 @@ func (s *TaskService) handleTaskCompletion(task *model.Task) {
 		s.Db.Save(task)
 		fmt.Printf("[Auto] 任务 %s 完成\n", taskID)
 	} else {
+		// 文件不存在，再等待 10 秒重试
+		fmt.Printf("[Auto] 文件不存在，等待 10 秒后重试...\n")
+		time.Sleep(10 * time.Second)
+		exists, err = s.storage.ObjectExists("drop-data", objectName)
+		if err == nil && exists {
+			flamegraphURL := fmt.Sprintf("http://localhost:9001/buckets/drop-data/browse?prefix=%s/", taskID)
+			task.Transition(model.StatusDone, model.ReasonFlamegraphDone, "采集完成")
+			task.FlamegraphURL = flamegraphURL
+			s.Db.Save(task)
+			fmt.Printf("[Auto] 任务 %s 完成（重试后找到文件）\n", taskID)
+			return
+		}
+
 		task.Transition(model.StatusFailed, model.ReasonPerfFailed, fmt.Sprintf("未在 MinIO 找到文件: %s", objectName))
 		s.Db.Save(task)
 		fmt.Printf("[Auto] 任务 %s 失败: 未找到文件 %s\n", taskID, objectName)

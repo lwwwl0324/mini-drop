@@ -29,6 +29,9 @@ func NewMinioClient(endpoint, accessKey, secretKey, bucket string, useSSL bool) 
 }
 
 func (m *MinioClient) ObjectExists(bucket, objectName string) (bool, error) {
+	if m == nil || m.client == nil {
+		return false, nil // 如果没有 client，认为文件不存在
+	}
 	ctx := context.Background()
 	_, err := m.client.StatObject(ctx, bucket, objectName, minio.StatObjectOptions{})
 	if err != nil {

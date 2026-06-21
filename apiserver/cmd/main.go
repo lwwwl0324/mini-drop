@@ -61,9 +61,11 @@ func main() {
 
 	storageClient, err := storage.NewMinioClient(minioEndpoint, minioAccessKey, minioSecretKey, minioBucket, false)
 	if err != nil {
-		log.Fatalf("连接 MinIO 失败: %v", err)
+		log.Printf("⚠️ MinIO 连接失败: %v (火焰图状态检查将跳过)", err)
+		storageClient = nil
+	} else {
+		log.Println("✅ MinIO 连接成功")
 	}
-	log.Println("✅ MinIO 连接成功")
 
 	taskService := service.NewTaskService(dropClient, db.GetDB(), storageClient)
 	taskHandler := handler.NewTaskHandler(taskService)
